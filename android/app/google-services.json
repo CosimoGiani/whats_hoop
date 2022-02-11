@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "374902884632",
+    "project_id": "whats-hoop",
+    "storage_bucket": "whats-hoop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374902884632:android:ce36dd750be750446ef66d",
+        "android_client_info": {
+          "package_name": "com.example.whatshoop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "374902884632-cn40f37nu6nlnt1kacmbap7u79v2imo4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.whatshoop",
+            "certificate_hash": "8ae204af1a5aea3ca628b6eccc4e83521882d381"
+          }
+        },
+        {
+          "client_id": "374902884632-9p7tvbcnqap7ee8g131gvrnaj9n44clb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlke0e1u0eHliitJFv92JRfTNLm24hke0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "374902884632-9p7tvbcnqap7ee8g131gvrnaj9n44clb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
