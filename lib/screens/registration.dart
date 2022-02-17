@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:whatshoop/model/user.dart';
+import 'package:whatshoop/models/user.dart' as UserModel;
 import 'package:whatshoop/screens/trainer_home.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -11,6 +11,8 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+
+  // TODO fortificare i controlli sugli input
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = new TextEditingController();
@@ -250,7 +252,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 25),
                     signupButton,
                     SizedBox(height: 10),
                   ],
@@ -266,29 +268,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   void signUp(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       await _authentication.createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {sendToFirestore()});
+          .then((value) => {createFirebaseUser()});
     }
   }
 
-  sendToFirestore() async {
+  Future createFirebaseUser() async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _authentication.currentUser;
-    UserModel userModel = UserModel();
-    userModel.id = user!.uid;
-    userModel.email = user.email;
-    userModel.firstName = firstNameController.text;
-    userModel.lastName = lastNameController.text;
-    userModel.type = selectedValue;
     await firebaseFirestore
         .collection("users")
-        .doc(user.uid)
-        .set(userModel.toMap());
+        .doc(user!.uid)
+        .set({
+          "id": user.uid,
+          "email": user.email,
+          "firstName": firstNameController.text,
+          "lastName": lastNameController.text,
+          "type": selectedValue
+        });
     if (selectedValue == 1) {
       Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => TrainerHome()), (route) => false);
     }
     if (selectedValue == 2) {
-      // TODO fare andare sulla pagina dell'altelta se ci si registra come giocatori
-      return null;
+      // TODO fare andare sulla pagina dell'atlelta se ci si registra come giocatori
     }
   }
 

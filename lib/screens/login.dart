@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       "WHATS HOOP",
                       style: TextStyle(
-                        fontSize: 40,
+                        fontSize: 45,
                         color: Colors.deepOrange,
                         fontWeight: FontWeight.bold,
                       ),
@@ -180,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // TODO aggiungere l'if per andare o nella schermata allenatore o nella schermata giocatore
 
-  void login(String email, String password) async {
+  Future login(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       await _authentication.signInWithEmailAndPassword(email: email, password: password)
           .then((id) => {
