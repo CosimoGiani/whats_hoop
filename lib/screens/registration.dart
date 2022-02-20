@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:whatshoop/models/user.dart' as UserModel;
 import 'package:whatshoop/screens/trainer_home.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -47,7 +46,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.mail),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "E-mail",
+        labelText: "E-mail",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -71,7 +70,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.account_circle),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Nome",
+        labelText: "Nome",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -97,7 +96,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.account_circle),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Cognome",
+        labelText: "Cognome",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -125,7 +124,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.lock),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Password",
+        labelText: "Password",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -150,7 +149,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.lock),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Ripeti password",
+        labelText: "Ripeti password",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),

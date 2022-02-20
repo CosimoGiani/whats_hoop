@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whatshoop/database_service.dart';
 import 'package:whatshoop/models/team.dart';
 import 'package:whatshoop/screens/activities.dart';
+import 'package:whatshoop/screens/main_page.dart';
 
 class TrainerHome extends StatefulWidget {
 
@@ -42,12 +43,12 @@ class _TrainerHomeState extends State<TrainerHome> {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return Scaffold(
-            appBar: AppBar(title: Text("Le tue squadre"), centerTitle: true, automaticallyImplyLeading: false),
+            appBar: AppBar(title: Text("Le tue squadre"), centerTitle: false, automaticallyImplyLeading: false),
             body: Center(child: CircularProgressIndicator()),
           );
         }
         return Scaffold(
-          backgroundColor: Colors.grey.shade100,
+          backgroundColor: Colors.grey.shade200,
           appBar: AppBar(
             title: Text("Le tue squadre"),
             centerTitle: false,
@@ -126,7 +127,8 @@ class _TrainerHomeState extends State<TrainerHome> {
       ),
       onTap: () {
         if (isVisible) return;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Activities()));
+        //Navigator.push(context, MaterialPageRoute(builder: (context) => Activities(team: teams[i])));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
       },
     ),
   );
@@ -208,7 +210,7 @@ class _TrainerHomeState extends State<TrainerHome> {
       ),
   );
 
-  Future<void> _loadData() async {
+  Future _loadData() async {
     String trainerID = _authUser!.uid.toString();
     List<Team> teamsUser = await service.getTeamsFromTrainerID(trainerID);
     teams = teamsUser;
