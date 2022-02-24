@@ -22,15 +22,17 @@ class _ActivitiesState extends State<Activities> {
   bool modify = true;
   final firestoreInstance = FirebaseFirestore.instance;
   final DatabaseService service = new DatabaseService();
-  Activity prova = Activity(time: "19:30");
 
   Future _loadData(String teamID) async {
     List<Activity> activities = await service.getActivitiesByTeamID(teamID);
-    for (Activity activity in activities) {
+    var toRemove = [];
+    for (var activity in activities) {
       if (isExpired(activity)) {
-        activities.remove(activity);
+        toRemove.add(activity);
+        await service.removeActivity(activity.id);
       }
     }
+    activities.removeWhere((element) => toRemove.contains(element));
     scheduledActivities = activities;
   }
 

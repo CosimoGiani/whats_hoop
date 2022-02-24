@@ -391,7 +391,6 @@ class _NewActivityState extends State<NewActivity> {
             SizedBox(width: 16),
             Expanded(
               child: Text(
-                //"Per favore inserire tutti i campi necessari ('Note' facoltativo).",
                 message,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
