@@ -2,6 +2,7 @@
 
 class Team {
 
+  String id;
   String name;
   int numPartecipants;
   //List<User> users;
@@ -9,6 +10,7 @@ class Team {
   String trainerID;
 
   Team({
+    this.id = "",
     required this.name,
     required this.numPartecipants,
     //this.users = const [],

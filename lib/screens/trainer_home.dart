@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whatshoop/database_service.dart';
 import 'package:whatshoop/models/team.dart';
-import 'package:whatshoop/screens/activities.dart';
 import 'package:whatshoop/screens/main_page.dart';
 
 class TrainerHome extends StatefulWidget {
@@ -62,14 +61,14 @@ class _TrainerHomeState extends State<TrainerHome> {
               ),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: !isVisible ? FloatingActionButton(
             elevation: 10,
             child: Icon(Icons.add),
             onPressed: () async {
               final team = await showCreationDialog();
               setState(() => teams.add(team));
             },
-          ),
+          ) : null,
           body: teams.isEmpty
               ? Center(child: Text("Non hai ancora creato nessuna squadra", style: TextStyle(fontSize: 18)))
               : ListView.separated(
@@ -112,7 +111,7 @@ class _TrainerHomeState extends State<TrainerHome> {
                 right: 0.0,
                 child: GestureDetector(
                   onTap: () async {
-                    await service.removeTeam(teams[i], _authUser!.uid);
+                    await service.removeTeam(teams[i]!.id);
                     setState(() => teams.remove(teams[i]));
                   },
                   child: Align(
@@ -127,8 +126,7 @@ class _TrainerHomeState extends State<TrainerHome> {
       ),
       onTap: () {
         if (isVisible) return;
-        //Navigator.push(context, MaterialPageRoute(builder: (context) => Activities(team: teams[i])));
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage(teams[i]!.id)));
       },
     ),
   );
@@ -190,8 +188,11 @@ class _TrainerHomeState extends State<TrainerHome> {
                   child: MaterialButton(
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                     minWidth: MediaQuery.of(context).size.width * 0.3,
-                    onPressed: () {
-                      addNewTeam();
+                    onPressed: () async {
+                      if(_formKey.currentState!.validate()) {
+                        Team newTeam = await service.addNewTeam(nameController);
+                        Navigator.of(context).pop(newTeam);
+                      }
                     },
                     child: Text(
                       "Crea",
@@ -214,20 +215,6 @@ class _TrainerHomeState extends State<TrainerHome> {
     String trainerID = _authUser!.uid.toString();
     List<Team> teamsUser = await service.getTeamsFromTrainerID(trainerID);
     teams = teamsUser;
-  }
-
-  Future addNewTeam() async {
-    if (_formKey.currentState!.validate()) {
-      String name = nameController.text;
-      String trainerID = _authUser!.uid.toString();
-      await firestoreInstance.collection("teams").add({
-        "name": nameController.text,
-        "numPartecipants": "0",
-        "trainerID": trainerID,
-      });
-      Team team = Team(name: name, numPartecipants: 0, trainerID: trainerID);
-      Navigator.of(context).pop(team);
-    }
   }
 
 }

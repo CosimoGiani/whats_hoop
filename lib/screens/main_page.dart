@@ -6,6 +6,10 @@ import 'package:whatshoop/screens/trainer_profile.dart';
 
 class MainPage extends StatefulWidget {
 
+  String teamID;
+
+  MainPage(this.teamID);
+
   @override
   _MainPageState createState() => _MainPageState();
 
@@ -15,12 +19,15 @@ class _MainPageState extends State<MainPage> {
 
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
-    Activities(),
-    TeamManagement(),
-    Surveys(),
-    TrainerProfile(),
-  ];
+  List<Widget> _widgetsBar(String id) {
+    final List<Widget> _widgetOptions = <Widget>[
+      Activities(id),
+      TeamManagement(),
+      Surveys(),
+      TrainerProfile(),
+    ];
+    return _widgetOptions;
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -32,7 +39,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: _widgetOptions[_selectedIndex],
+      body: _widgetsBar(widget.teamID)[_selectedIndex],
       bottomNavigationBar: SizedBox(
         height: size.height * 0.1,
         child: BottomNavigationBar(

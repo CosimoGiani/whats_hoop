@@ -1,49 +1,64 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:whatshoop/database_service.dart';
+import 'package:whatshoop/models/activity.dart';
 
 class NewActivity extends StatefulWidget {
+
+  String teamID;
+  NewActivity(this.teamID);
 
   @override
   _NewActivityState createState() => _NewActivityState();
 
 }
 
+// TODO quando si aggiunge un'attività deve partire in automatico il relativo sondaggio
+
 class _NewActivityState extends State<NewActivity> {
 
-  //int selectedValue = 0;
-  //DateTime? _dateTime = DateTime.now();
-  String day = DateTime.now().day.toString();
-  String month = DateTime.now().month.toString();
-  String year = DateTime.now().year.toString();
+  final _formKey = GlobalKey<FormState>();
+  final firestoreInstance = FirebaseFirestore.instance;
+  String dateToDisplay = "";
   final types = ["Allenamento", "Partita"];
   String? value;
+  String timeToDisplay = "";
+  final initialTime = const TimeOfDay(hour: 0, minute: 0);
+  String placeToDisplay = "";
+  String notesToDisplay = "(Facoltativo)";
+  final TextEditingController placeController = new TextEditingController();
+  final TextEditingController notesController = new TextEditingController();
+  final DatabaseService service = new DatabaseService();
+  bool isToday = false;
+  bool hourSelectedNow = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         title: Text("Aggiungi un'attività"),
         centerTitle: true,
       ),
-      body: Center(
+      body: Builder(builder: (context) => SingleChildScrollView(
         child: Column(
           children: [
-            SingleChildScrollView(
+            Container(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(20, 30, 20, 20),
-                  child: Form(
-                    child: Column(
-                      children: <Widget>[
-                        // TIPO
-                        Row(
+                  padding: EdgeInsets.fromLTRB(20, 30, 20, 25),
+                  child: Column(
+                    children: <Widget>[
+                      // TIPO
+                      Row(
                           children: [
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.deepOrangeAccent,
                               ),
-                              height: 50,
+                              height: 35,
                               width: 120,
                               child: Row(
                                 children: [
@@ -71,23 +86,23 @@ class _NewActivityState extends State<NewActivity> {
                                       isExpanded: true,
                                       icon: Icon(Icons.arrow_drop_down, color: Colors.deepOrangeAccent),
                                       items: types.map(buildMenuType).toList(),
-                                      onChanged: (value) => setState(() => this.value = value),
+                                      onChanged: (value) {setState(() => this.value = value);},
                                     ),
                                   ),
                                 ),
                               ),
                           ],
                         ),
-                        SizedBox(height: 25),
-                        // DATA
-                        Row(
+                      SizedBox(height: 25),
+                      // DATA
+                      Row(
                           children: [
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.deepOrangeAccent,
                               ),
-                              height: 50,
+                              height: 35,
                               width: 120,
                               child: Row(
                                 children: [
@@ -111,29 +126,31 @@ class _NewActivityState extends State<NewActivity> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Text(
-                                        "$day/$month/$year",
+                                        "$dateToDisplay",
                                         style: TextStyle(fontSize: 20),
                                     ),
                                     Padding(
-                                      //padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
-                                      padding: EdgeInsets.fromLTRB(77, 0, 0, 0),
+                                      padding: EdgeInsets.fromLTRB(65, 0, 0, 0),
                                       child: IconButton(
                                         onPressed: () {
                                           showDatePicker(
                                             context: context,
-                                            locale: const Locale("it", "IT"),
+                                            //locale: const Locale("it", "IT"),
                                             initialDate: DateTime.now(),
-                                            firstDate: DateTime(2022),
-                                            lastDate: DateTime(2050),
+                                            firstDate: DateTime.now().subtract(Duration(days: 0)),
+                                            lastDate: DateTime(DateTime.now().year + 5),
                                           ).then((date) {
+                                            if (DateFormat("dd/MM/yyy").format(date!) == DateFormat("dd/MM/yyy").format(DateTime.now())) {
+                                              setState(() {
+                                                isToday = true;
+                                              });
+                                            }
                                             setState(() {
-                                              day = date!.day.toString();
-                                              month = date.month.toString();
-                                              year = date.year.toString();
+                                              dateToDisplay = DateFormat("dd/MM/yyy").format(date);
                                             });
                                           });
                                         },
-                                        icon: Icon(Icons.edit, color: Colors.deepOrangeAccent, size: 25),
+                                        icon: Icon(Icons.event, color: Colors.deepOrangeAccent, size: 25),
                                       ),
                                     ),
                                   ],
@@ -142,17 +159,16 @@ class _NewActivityState extends State<NewActivity> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 20),
-                        // ORARIO
-                        Container(
-                          child: Row(
-                            children: [
-                              Container(
+                      SizedBox(height: 25),
+                      // ORARIO
+                      Row(
+                          children: [
+                            Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: Colors.deepOrangeAccent,
                                 ),
-                                height: 50,
+                                height: 35,
                                 width: 120,
                                 child: Row(
                                   children: [
@@ -166,33 +182,227 @@ class _NewActivityState extends State<NewActivity> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                 ),
                               ),
-                              SizedBox(width: 10),
-                              Material(
-                                elevation: 20,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  //height: 60,
-                                  child: Row(
-                                    children: [
-                                      Text("ciao"),
-                                      SizedBox(width: 50),
-                                      Text("ciao")
-                                    ],
-                                  ),
+                            SizedBox(width: 10),
+                            Material(
+                              elevation: 20,
+                              borderRadius: BorderRadius.circular(10),
+                              child: Container(
+                                width: 240,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      "$timeToDisplay",
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(122, 0, 0, 0),
+                                      child: IconButton(
+                                        onPressed: () {
+                                          showTimePicker(
+                                              context: context,
+                                              initialTime: initialTime,
+                                          ).then((time) {
+                                            if (time!.hour < DateTime.now().hour) {
+                                              setState(() {
+                                                hourSelectedNow = true;
+                                              });
+                                            }
+                                            setState(() {
+                                              timeToDisplay = adjusteTime(time);
+                                            });
+                                          });
+                                        },
+                                        icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      SizedBox(height: 25),
+                      // LUOGO
+                      Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          height: 35,
+                          child: Row(
+                            children: [
+                              Icon(Icons.map_outlined, color: Colors.white),
+                              SizedBox(width: 5),
+                              Text(
+                                  "LUOGO",
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                              ),
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                        ),
+                      SizedBox(height: 7),
+                      Material(
+                          elevation: 20,
+                          borderRadius: BorderRadius.circular(10),
+                          child: Flex(
+                            direction: Axis.horizontal,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Container(
+                                        width: double.infinity,
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                          child: Text(
+                                            "$placeToDisplay",
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 50,
+                                      child: IconButton(
+                                        onPressed: () async {
+                                          final place = await showPlaceDialog();
+                                          setState(() => placeToDisplay = place!);
+                                        },
+                                        icon: Icon(Icons.edit, color: Colors.deepOrangeAccent, size: 25),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      SizedBox(height: 25),
+                      // NOTE
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.deepOrangeAccent,
+                        ),
+                        height: 35,
+                        child: Row(
+                          children: [
+                            Icon(Icons.speaker_notes, color: Colors.white),
+                            SizedBox(width: 5),
+                            Text(
+                                "NOTE",
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                      ),
+                      SizedBox(height: 7),
+                      Material(
+                        elevation: 20,
+                        borderRadius: BorderRadius.circular(10),
+                        child: Flex(
+                          direction: Axis.horizontal,
+                        children:[ Expanded(
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: Container(
+                                  width: double.infinity,
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                    child: Text(
+                                      "$notesToDisplay",
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 50,
+                                child: IconButton(
+                                  onPressed: () async {
+                                    final notes = await showNotesDialog();
+                                    setState(() => notesToDisplay = notes!);
+                                  },
+                                  icon: Icon(Icons.edit, color: Colors.deepOrangeAccent, size: 25),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),])
+                      ),
+                      SizedBox(height: 35),
+                      // BOTTONE AGGIUNGI
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          onSurface: Colors.deepOrangeAccent,
+                          elevation: 10,
+                          padding: EdgeInsets.fromLTRB(50, 17, 50, 17),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child: Text(
+                          "Aggiungi",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        onPressed: () async {
+                          if(placeToDisplay.isEmpty || value!.isEmpty || dateToDisplay.isEmpty || timeToDisplay.isEmpty) {
+                            showErrorSnackBar(context, "Per favore inserire tutti i campi necessari ('Note' facoltativo).");
+                          } else if (isToday && hourSelectedNow) {
+                            setState(() {
+                              showErrorSnackBar(context, "Evento non programmato. Orario già passato.");
+                              dateToDisplay = "";
+                              timeToDisplay = "";
+                              isToday = false;
+                              hourSelectedNow = false;
+                            });
+                          } else {
+                            Activity activity = await service.addNewActivity(widget.teamID, value!, dateToDisplay, timeToDisplay, placeController, notesController);
+                            Navigator.of(context).pop(activity);
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              ),
+            ),
           ],
         ),
-      ),
+      ),),
     );
+  }
+
+  void showErrorSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(Icons.error_outline_outlined, size: 32, color: Colors.white),
+            SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                //"Per favore inserire tutti i campi necessari ('Note' facoltativo).",
+                message,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+      backgroundColor: Colors.deepOrangeAccent,
+      duration: Duration(seconds: 4),
+      behavior: SnackBarBehavior.fixed,
+    );
+    Scaffold.of(context)..hideCurrentSnackBar()..showSnackBar(snackBar);
   }
 
   DropdownMenuItem<String> buildMenuType(String type) => DropdownMenuItem(
@@ -200,6 +410,160 @@ class _NewActivityState extends State<NewActivity> {
     child: Text(
       type,
       style: TextStyle(fontSize: 20),
+    ),
+  );
+
+  String adjusteTime(TimeOfDay time) {
+    String hour = time.hour.toString();
+    String minute = time.minute.toString();
+    if (hour.length == 1 ) {
+      hour = time.hour.toString().padLeft(2, "0");
+    }
+    if (minute.length == 1) {
+      minute = time.minute.toString().padLeft(2, "0");
+    }
+    return hour + ":" + minute;
+  }
+
+  Future<String?> showPlaceDialog() => showDialog<String>(
+    context: context,
+    builder: (context) => Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 15),
+              Text(
+                "Luogo",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              SizedBox(height: 15),
+              Text(
+                "Inserisci il luogo dove si terrà l'evento",
+                style: TextStyle(
+                    fontSize: 18
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(15, 7, 15, 10),
+                child: TextFormField(
+                  controller: placeController,
+                  onSaved: (value) {
+                    placeController.text = value!;
+                  },
+                  textInputAction: TextInputAction.done,
+                  decoration: InputDecoration(
+                    hintText: "Luogo evento",
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+              Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.deepOrangeAccent,
+                child: MaterialButton(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  minWidth: MediaQuery.of(context).size.width * 0.3,
+                  onPressed: () {
+                    Navigator.of(context).pop(placeController.text);
+                  },
+                  child: Text(
+                    "Salva",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+
+  Future<String?> showNotesDialog() => showDialog<String>(
+    context: context,
+    builder: (context) => Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 15),
+              Text(
+                "Note aggiuntive",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
+              SizedBox(height: 15),
+              Text(
+                "Qualcosa da aggiungere? Scrivi qui",
+                style: TextStyle(
+                    fontSize: 18
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(15, 7, 15, 10),
+                child: TextFormField(
+                  controller: notesController,
+                  onSaved: (value) {
+                    notesController.text = value!;
+                  },
+                  textInputAction: TextInputAction.done,
+                  decoration: InputDecoration(
+                    hintText: "Note",
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+              Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.deepOrangeAccent,
+                child: MaterialButton(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  minWidth: MediaQuery.of(context).size.width * 0.3,
+                  onPressed: () {
+                    Navigator.of(context).pop(notesController.text);
+                  },
+                  child: Text(
+                    "Salva",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+            ],
+          ),
+        ),
+      ),
     ),
   );
 
