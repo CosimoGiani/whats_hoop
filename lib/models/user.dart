@@ -1,17 +1,19 @@
-class User {
+class UserModel {
 
-  String? id;
-  String? email;
-  String? firstName;
-  String? lastName;
-  int? type;
+  String id;
+  String email;
+  String firstName;
+  String lastName;
+  int type;
+  String? teamID;
 
-  User({
-    this.id,
-    this.email,
-    this.firstName,
-    this.lastName,
-    this.type
+  UserModel({
+    required this.id,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+    required this.type,
+    this.teamID,
   });
 
 }

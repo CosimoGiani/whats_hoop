@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatshoop/screens/registration.dart';
 import 'package:whatshoop/screens/trainer_home.dart';
+import 'package:whatshoop/database_service.dart';
 
 class LoginScreen extends StatefulWidget {
 
@@ -9,13 +10,15 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
+// TODO aggiungere messaggi di validazione login
+
 class _LoginScreenState extends State<LoginScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
-
+  final DatabaseService service = new DatabaseService();
   final _authentication = FirebaseAuth.instance;
 
   @override
@@ -177,13 +180,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
-  // TODO aggiungere l'if per andare o nella schermata allenatore o nella schermata giocatore
+  // TODO aggiungere aggiungere comando per andare nella schermata giocatore
 
   Future login(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       await _authentication.signInWithEmailAndPassword(email: email, password: password)
-          .then((id) => {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => TrainerHome())),
+          .then((id) async {
+        if ((await service.getUserFromID(_authentication.currentUser!.uid)).type == 1) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => TrainerHome()));
+        } else {}
       });
     }
   }

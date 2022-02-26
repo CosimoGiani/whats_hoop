@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'models/activity.dart';
+import 'package:whatshoop/models/user.dart' as Player;
 import 'models/team.dart';
 
 class DatabaseService {
@@ -74,6 +75,24 @@ class DatabaseService {
     document.update({"id":"${ref.id}"});
     Activity activity = Activity(id: ref.id, type: value, date: date, time: time, place: placeController.text, notes: notesController.text, teamID: teamID);
     return activity;
+  }
+
+  Future<Player.UserModel> getUserFromID(String id) async {
+    var data = (await firestoreInstance.collection("users").doc(id).get()).data();
+    return new Player.UserModel(id: data!["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
+  }
+
+  Future<Player.UserModel> getUserFromEmail(String email) async {
+    var user = (await firestoreInstance.collection("users").where("email", isEqualTo: email).get()).docs;
+    var data = user[0].data();
+    return new Player.UserModel(id: data["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
+  }
+
+  Future sendInvite(String teamID, String userID) async {
+    await firestoreInstance.collection("team_invitations").add({
+      "teamID": teamID,
+      "userID": userID,
+    });
   }
 
 }

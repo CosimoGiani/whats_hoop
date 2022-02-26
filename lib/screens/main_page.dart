@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
   List<Widget> _widgetsBar(String id) {
     final List<Widget> _widgetOptions = <Widget>[
       Activities(id),
-      TeamManagement(),
+      TeamManagement(id),
       Surveys(),
       TrainerProfile(),
     ];

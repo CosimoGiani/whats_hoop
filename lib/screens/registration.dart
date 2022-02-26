@@ -267,23 +267,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   void signUp(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       await _authentication.createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {createFirebaseUser()});
+          .then((value) => {createNewUser()});
     }
   }
 
-  Future createFirebaseUser() async {
+  Future createNewUser() async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     User? user = _authentication.currentUser;
     await firebaseFirestore
         .collection("users")
         .doc(user!.uid)
         .set({
-          "id": user.uid,
-          "email": user.email,
-          "firstName": firstNameController.text,
-          "lastName": lastNameController.text,
-          "type": selectedValue
-        });
+      "id": user.uid,
+      "email": user.email,
+      "firstName": firstNameController.text,
+      "lastName": lastNameController.text,
+      "type": selectedValue,
+      "teamID": "",
+    });
     if (selectedValue == 1) {
       Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => TrainerHome()), (route) => false);
     }
