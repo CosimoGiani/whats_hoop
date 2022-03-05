@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'models/activity.dart';
 import 'package:whatshoop/models/user.dart' as Player;
+import 'models/fine.dart';
 import 'models/team.dart';
 
 class DatabaseService {
@@ -43,6 +44,22 @@ class DatabaseService {
     firestoreInstance.collection("teams").doc("${ref.id}").update({"id":"${ref.id}"});
     Team team = Team(id: ref.id, name: name, numPartecipants: 0, trainerID: trainerID);
     return team;
+  }
+
+  Future<List<Player.UserModel>> getPlayersFromTeamID(String teamID) async {
+    List<Player.UserModel> players = [];
+    var playersData = await firestoreInstance.collection("users").where("teamID", isEqualTo: teamID).get();
+    for (var value in playersData.docs) {
+      Map<String, dynamic> data = value.data();
+      String id = data["id"];
+      String email = data["email"];
+      String firstName = data["firstName"];
+      String lastName = data["lastName"];
+      int type = data["type"];
+      String teamID = data["teamID"];
+      players.add(Player.UserModel(id: id, email: email, firstName: firstName, lastName: lastName, type: type, teamID: teamID));
+    }
+    return players;
   }
 
   Future<List<Activity>> getActivitiesByTeamID(String teamID) async {
@@ -89,10 +106,56 @@ class DatabaseService {
   }
 
   Future sendInvite(String teamID, String userID) async {
-    await firestoreInstance.collection("team_invitations").add({
-      "teamID": teamID,
-      "userID": userID,
+    String? userTeamID = (await getUserFromID(userID)).teamID;
+    if (userTeamID != teamID) {
+      await firestoreInstance.collection("team_invitations").add({
+        "teamID": teamID,
+        "userID": userID,
+      });
+    }
+  }
+
+  Future<Fine> finePlayer(String reason, int euro, int cents, String date, String playerID) async {
+    DocumentReference ref = await firestoreInstance.collection("fines").add({
+      "reason": reason,
+      "euro": euro,
+      "cents": cents,
+      "date": date,
+      "playerID": playerID,
     });
+    var document = firestoreInstance.collection("fines").doc(ref.id);
+    document.update({"id": ref.id});
+    Fine fine = Fine(id: ref.id, reason: reason, euro: euro, cents: cents, date: date, playerID: playerID);
+    return fine;
+  }
+
+  Future<List<Fine>> getFinesFromPlayerID(String playerID) async {
+    List<Fine> fines = [];
+    var finesData = await firestoreInstance.collection("fines").where("playerID", isEqualTo: playerID).get();
+    for(var value in finesData.docs) {
+      Map<String, dynamic> data = value.data();
+      String id = data["id"];
+      String reason = data["reason"];
+      int euro = data["euro"];
+      int cents = data["cents"];
+      String date = data["date"];
+      String playerID = data["playerID"];
+      fines.add(Fine(id: id, reason: reason, euro: euro, cents: cents, date: date, playerID: playerID));
+    }
+    return fines;
+  }
+
+  Future clearPlayerFines(String playerID) async {
+    await firestoreInstance.collection("fines").where("playerID", isEqualTo: playerID).get()
+    .then((value) {
+      for (var element in value.docs) {
+        firestoreInstance.collection("fines").doc(element.id).delete();
+      }
+    });
+  }
+
+  Future removeFine(String fineID) async {
+    await firestoreInstance.collection("fines").doc(fineID).delete();
   }
 
 }

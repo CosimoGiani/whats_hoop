@@ -35,6 +35,12 @@ class _TrainerHomeState extends State<TrainerHome> {
     super.dispose();
   }
 
+  Future _loadData() async {
+    String trainerID = _authUser!.uid.toString();
+    List<Team> teamsUser = await service.getTeamsFromTrainerID(trainerID);
+    teams = teamsUser;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -210,11 +216,5 @@ class _TrainerHomeState extends State<TrainerHome> {
         ),
       ),
   );
-
-  Future _loadData() async {
-    String trainerID = _authUser!.uid.toString();
-    List<Team> teamsUser = await service.getTeamsFromTrainerID(trainerID);
-    teams = teamsUser;
-  }
 
 }

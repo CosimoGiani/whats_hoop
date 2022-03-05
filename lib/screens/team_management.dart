@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:whatshoop/models/user.dart' as Player;
 import 'package:flutter/material.dart';
 import 'package:whatshoop/models/team.dart';
 import 'package:whatshoop/database_service.dart';
+import 'package:whatshoop/screens/fines.dart';
 
 class TeamManagement extends StatefulWidget {
 
@@ -14,24 +14,21 @@ class TeamManagement extends StatefulWidget {
 
 }
 
+// TODO quando utente accetta deve aggiornare il numPartecipants del team
+
 class _TeamManagementState extends State<TeamManagement> {
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = new TextEditingController();
-  final _authUser = FirebaseAuth.instance.currentUser;
   List<Team?> teams = [];
   final DatabaseService service = new DatabaseService();
   late TextField newInvite;
   bool initialization = false;
-  List<Player.UserModel> players = [Player.UserModel(
-      id: FirebaseAuth.instance.currentUser!.uid,
-      email: "prova@mail.com", firstName: "Prova", lastName: "Test", type: 2)];
+  List<Player.UserModel> players = [];
 
-  Future _loadData() async {
-    String trainerID = _authUser!.uid.toString();
-    List<Team> teamsUser = await service.getTeamsFromTrainerID(trainerID);
-    teams = teamsUser;
-    // TODO caricare i giocatori della squadra, tipo getTeamPlayers()
+  Future _loadData(String teamID) async {
+    List<Player.UserModel> playersToLoad = await service.getPlayersFromTeamID(teamID);
+    players = playersToLoad;
     initialization = true;
   }
 
@@ -44,7 +41,7 @@ class _TeamManagementState extends State<TeamManagement> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _loadData(),
+      future: _loadData(widget.teamID),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done && !initialization) {
           return Scaffold(
@@ -66,21 +63,24 @@ class _TeamManagementState extends State<TeamManagement> {
             child: Column(
               children: [
                 // AGGIUNGI ATLETA
+                SizedBox(height: 20),
                 Container(
+                  color: Colors.orange.shade500,
                   alignment: Alignment.center,
                   height: 50,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
-                        child: Text("Aggiungi atleta", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        child: Text("AGGIUNGI ATLETA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
                 ),
                 // INVITO
                 Padding(
-                  padding: EdgeInsets.fromLTRB(20, 15, 20, 20),
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 30),
                   child: Material(
                     elevation: 15,
                     shadowColor: Colors.grey,
@@ -90,10 +90,8 @@ class _TeamManagementState extends State<TeamManagement> {
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(15, 0, 0, 10),
                         child: Row(
-                          //crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             SizedBox(
-                              //height: 100,
                               width: 300,
                               child: TextFormField(
                                 autofocus: false,
@@ -118,21 +116,19 @@ class _TeamManagementState extends State<TeamManagement> {
                                 ),
                               ),
                             ),
-                            //SizedBox(width: 1),
                             Container(
                               padding: EdgeInsets.only(top: 10),
-                              //color: Colors.lightBlue,
                               child: Stack(
                                 children: [
                                   Positioned(
-                                    left: 9.8,
+                                    left: 10,
                                     top: 9.5,
                                     child: Icon(Icons.person_add, color: Colors.black.withAlpha(150), size: 32),
                                   ),
                                   IconButton(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      await invitePlayer(emailController.text, widget.teamID);
                                       setState(() {
-                                        inviteUser(emailController.text, widget.teamID);
                                         emailController.text = "";
                                       });
                                     },
@@ -153,11 +149,13 @@ class _TeamManagementState extends State<TeamManagement> {
                 Container(
                   alignment: Alignment.center,
                   height: 50,
+                  color: Colors.orange.shade500,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                        child: Text("La tua squadra", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                        child: Text("LA TUA SQUADRA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
@@ -182,16 +180,42 @@ class _TeamManagementState extends State<TeamManagement> {
     );
   }
 
-  void inviteUser(String email, String teamID) async {
+  Future invitePlayer(String email, String teamID) async {
     if (_formKey.currentState!.validate()) {
-      // TODO aggiungere SnackBar o toast message per dare un'info di qualche tipo all'utente riguardo l'invito
-      Player.UserModel player = await service.getUserFromEmail(email);
-      await service.sendInvite(teamID, player.id);
+      try {
+        Player.UserModel player = await service.getUserFromEmail(email);
+        await service.sendInvite(teamID, player.id);
+      } on RangeError catch (e) {
+        print(e);
+        showErrorSnackBar(context, "Nessun utente corrisponde a questa email.");
+      }
     }
   }
 
-  void removeUser() {
+  void removePlayer() {
     // TODO logica per rimuovere l'utente dalla squadra
+  }
+
+  void showErrorSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(Icons.error_outline_outlined, size: 32, color: Colors.white),
+          SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.deepOrangeAccent,
+      duration: Duration(seconds: 4),
+      behavior: SnackBarBehavior.fixed,
+    );
+    Scaffold.of(context)..hideCurrentSnackBar()..showSnackBar(snackBar);
   }
 
   createCard(List<Player.UserModel> players, int i) => Card(
@@ -214,12 +238,14 @@ class _TeamManagementState extends State<TeamManagement> {
             child: Stack(
               children: [
                 Positioned(
-                  left: 9.8,
+                  left: 10,
                   top: 9.5,
                   child: Icon(Icons.attach_money_sharp, color: Colors.black.withAlpha(150), size: 35),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Fines(players[i].id)));
+                  },
                   icon: Icon(Icons.attach_money_sharp),
                   color: Colors.deepOrangeAccent,
                   iconSize: 35,
@@ -233,7 +259,7 @@ class _TeamManagementState extends State<TeamManagement> {
             child: Stack(
               children: [
                 Positioned(
-                  left: 9.8,
+                  left: 10,
                   top: 9.5,
                   child: Icon(Icons.person_remove, color: Colors.black.withAlpha(150), size: 32),
                 ),
@@ -293,7 +319,9 @@ class _TeamManagementState extends State<TeamManagement> {
                     child: MaterialButton(
                       //padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                       minWidth: MediaQuery.of(context).size.width * 0.2,
-                      onPressed: () {},
+                      onPressed: () {
+                        // TODO richiamare il metodo remove
+                      },
                       child: Text(
                         "Sì",
                         style: TextStyle(
@@ -331,70 +359,5 @@ class _TeamManagementState extends State<TeamManagement> {
       ),
     ),
   );
-
-  /*createCard(List<Team?> teams, int i) => Card(
-    shadowColor: Colors.grey,
-    elevation: 10,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-    color: Colors.white,
-    child: InkWell(
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(teams[i]!.name, style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
-                SizedBox(height: 25),
-                Row(
-                  children: [
-                    Text(teams[i]!.numPartecipants.toString(), style: TextStyle(fontSize: 18)),
-                    Text(" PARTECIPANTI", style: TextStyle(fontSize: 18)),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-      onTap: () {},
-    ),
-  );*/
-
-  /*void _buildTextFieldInvite() {
-    setState(() {
-      newInvite = new TextField(
-        keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-          //contentPadding: EdgeInsets.fromLTRB(2, 5, 0, 0),
-          hintText: "prova",
-        ),
-      );
-    });
-  }
-
-  Widget _buildInviteWidget() {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 8,
-            child: newInvite,
-          ),
-          Expanded(
-            flex: 2,
-            child: IconButton(
-              alignment: Alignment.centerRight,
-              onPressed: (){},
-              icon: Icon(Icons.send),
-            ),
-          ),
-        ],
-      ),
-    );
-  }*/
-
 
 }
