@@ -53,27 +53,32 @@ class _NewActivityState extends State<NewActivity> {
                       // TIPO
                       Row(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.deepOrangeAccent,
-                              ),
-                              height: 35,
-                              width: 120,
-                              child: Row(
-                                children: [
-                                  Icon(Icons.sports_basketball, color: Colors.white),
-                                  SizedBox(width: 5),
-                                  Text(
-                                      "TIPO",
-                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                                  ),
-                                ],
-                                mainAxisAlignment: MainAxisAlignment.center,
+                            Expanded(
+                              flex: 5,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.deepOrangeAccent,
+                                ),
+                                height: 35,
+                                width: 120,
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.sports_basketball, color: Colors.white),
+                                    SizedBox(width: 5),
+                                    Text(
+                                        "TIPO",
+                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                    ),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                ),
                               ),
                             ),
                             SizedBox(width: 10),
-                            Material(
+                            Expanded(
+                              flex: 8,
+                              child: Material(
                                 elevation: 20,
                                 borderRadius: BorderRadius.circular(10),
                                 child: Container(
@@ -91,69 +96,82 @@ class _NewActivityState extends State<NewActivity> {
                                   ),
                                 ),
                               ),
+                            ),
                           ],
                         ),
                       SizedBox(height: 25),
                       // DATA
                       Row(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.deepOrangeAccent,
-                              ),
-                              height: 35,
-                              width: 120,
-                              child: Row(
-                                children: [
-                                  Icon(Icons.event_note_sharp, color: Colors.white),
-                                  SizedBox(width: 5),
-                                  Text(
-                                      "DATA",
-                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                                  ),
-                                ],
-                                mainAxisAlignment: MainAxisAlignment.center,
+                            Expanded(
+                              flex: 5,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.deepOrangeAccent,
+                                ),
+                                height: 35,
+                                width: 120,
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.event_note_sharp, color: Colors.white),
+                                    SizedBox(width: 5),
+                                    Text(
+                                        "DATA",
+                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                    ),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                ),
                               ),
                             ),
                             SizedBox(width: 10),
-                            Material(
-                              elevation: 20,
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                width: 240,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                        "$dateToDisplay",
-                                        style: TextStyle(fontSize: 20),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(65, 0, 0, 0),
-                                      child: IconButton(
-                                        onPressed: () {
-                                          showDatePicker(
-                                            context: context,
-                                            //locale: const Locale("it", "IT"),
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.now().subtract(Duration(days: 0)),
-                                            lastDate: DateTime(DateTime.now().year + 5),
-                                          ).then((date) {
-                                            if (DateFormat("dd/MM/yyy").format(date!) == DateFormat("dd/MM/yyy").format(DateTime.now())) {
-                                              setState(() {
-                                                isToday = true;
-                                              });
-                                            }
-                                            setState(() {
-                                              dateToDisplay = DateFormat("dd/MM/yyy").format(date);
-                                            });
-                                          });
-                                        },
-                                        icon: Icon(Icons.event, color: Colors.deepOrangeAccent, size: 25),
+                            Expanded(
+                              flex: 8,
+                              child: Material(
+                                elevation: 20,
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  //width: 240,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Expanded(
+                                        flex: 7,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 17),
+                                          child: Text(
+                                            "$dateToDisplay",
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      Expanded(
+                                        flex: 2,
+                                        child: IconButton(
+                                          onPressed: () {
+                                            showDatePicker(
+                                              context: context,
+                                              //locale: const Locale("it", "IT"),
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime.now().subtract(Duration(days: 0)),
+                                              lastDate: DateTime(DateTime.now().year + 5),
+                                            ).then((date) {
+                                              if (DateFormat("dd/MM/yyy").format(date!) == DateFormat("dd/MM/yyy").format(DateTime.now())) {
+                                                setState(() {
+                                                  isToday = true;
+                                                });
+                                              }
+                                              setState(() {
+                                                dateToDisplay = DateFormat("dd/MM/yyy").format(date);
+                                              });
+                                            });
+                                          },
+                                          icon: Icon(Icons.event, color: Colors.deepOrangeAccent, size: 25),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -163,7 +181,9 @@ class _NewActivityState extends State<NewActivity> {
                       // ORARIO
                       Row(
                           children: [
-                            Container(
+                            Expanded(
+                              flex: 5,
+                              child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   color: Colors.deepOrangeAccent,
@@ -182,41 +202,72 @@ class _NewActivityState extends State<NewActivity> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                 ),
                               ),
+                            ),
                             SizedBox(width: 10),
-                            Material(
-                              elevation: 20,
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                width: 240,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "$timeToDisplay",
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(122, 0, 0, 0),
-                                      child: IconButton(
-                                        onPressed: () {
-                                          showTimePicker(
+                            Expanded(
+                              flex: 8,
+                              child: Material(
+                                elevation: 20,
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  //width: 240,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Expanded(
+                                        flex: 7,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 17),
+                                          child: Text(
+                                            "$timeToDisplay",
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: IconButton(
+                                          onPressed: () {
+                                            showTimePicker(
                                               context: context,
                                               initialTime: initialTime,
-                                          ).then((time) {
-                                            if (time!.hour < DateTime.now().hour) {
+                                            ).then((time) {
+                                              if (time!.hour < DateTime.now().hour) {
+                                                setState(() {
+                                                  hourSelectedNow = true;
+                                                });
+                                              }
                                               setState(() {
-                                                hourSelectedNow = true;
+                                                timeToDisplay = adjusteTime(time);
                                               });
-                                            }
-                                            setState(() {
-                                              timeToDisplay = adjusteTime(time);
                                             });
-                                          });
-                                        },
-                                        icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
+                                          },
+                                          icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      /*Padding(
+                                        padding: EdgeInsets.fromLTRB(122, 0, 0, 0),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            showTimePicker(
+                                              context: context,
+                                              initialTime: initialTime,
+                                            ).then((time) {
+                                              if (time!.hour < DateTime.now().hour) {
+                                                setState(() {
+                                                  hourSelectedNow = true;
+                                                });
+                                              }
+                                              setState(() {
+                                                timeToDisplay = adjusteTime(time);
+                                              });
+                                            });
+                                          },
+                                          icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
+                                        ),
+                                      ),*/
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -444,12 +495,13 @@ class _NewActivityState extends State<NewActivity> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 20,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                 ),
               ),
               SizedBox(height: 15),
               Text(
                 "Inserisci il luogo dove si terrà l'evento",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 18
                 ),
@@ -521,6 +573,7 @@ class _NewActivityState extends State<NewActivity> {
               SizedBox(height: 15),
               Text(
                 "Qualcosa da aggiungere? Scrivi qui",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 18
                 ),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whatshoop/models/survey.dart';
 import 'models/activity.dart';
 import 'package:whatshoop/models/user.dart' as Player;
 import 'models/fine.dart';
@@ -79,6 +80,21 @@ class DatabaseService {
     return activities;
   }
 
+  Future<List<Survey>> getSurveysByTeamID(String teamID) async {
+    List<Survey> surveys = [];
+    var surveysData = await firestoreInstance.collection("surveys").where("teamID", isEqualTo: teamID).get();
+    for (var value in surveysData.docs) {
+      Map<String, dynamic> data = value.data();
+      String id = data["id"];
+      String teamID = data["teamID"];
+      String title = data["title"];
+      String question = data["question"];
+      List<dynamic> options = data["options"];
+      surveys.add(Survey(id: id, teamID: teamID, title: title, question: question, options: options.cast<String>()));
+    }
+    return surveys;
+  }
+
   Future<Activity> addNewActivity(String teamID, String value, String date, String time, TextEditingController placeController, TextEditingController notesController) async {
     DocumentReference ref = await firestoreInstance.collection("activities").add({
       "type": value,
@@ -92,6 +108,17 @@ class DatabaseService {
     document.update({"id":"${ref.id}"});
     Activity activity = Activity(id: ref.id, type: value, date: date, time: time, place: placeController.text, notes: notesController.text, teamID: teamID);
     return activity;
+  }
+
+  Future addNewSurvey(String teamID, String title, String question, List<String> options) async {
+    DocumentReference ref = await firestoreInstance.collection("surveys").add({
+      "teamID": teamID,
+      "title": title,
+      "question": question,
+      "options": options,
+    });
+    var document = firestoreInstance.collection("surveys").doc("${ref.id}");
+    document.update({"id":"${ref.id}"});
   }
 
   Future<Player.UserModel> getUserFromID(String id) async {

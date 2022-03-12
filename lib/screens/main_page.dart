@@ -23,7 +23,7 @@ class _MainPageState extends State<MainPage> {
     final List<Widget> _widgetOptions = <Widget>[
       Activities(id),
       TeamManagement(id),
-      Surveys(),
+      Surveys(id),
       TrainerProfile(),
     ];
     return _widgetOptions;

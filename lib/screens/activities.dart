@@ -20,7 +20,6 @@ class _ActivitiesState extends State<Activities> {
   List<Activity> scheduledActivities = [];
   bool isVisible = false;
   bool modify = true;
-  final firestoreInstance = FirebaseFirestore.instance;
   final DatabaseService service = new DatabaseService();
 
   Future _loadData(String teamID) async {
@@ -47,6 +46,9 @@ class _ActivitiesState extends State<Activities> {
           return true;
         }
       }
+    }
+    if (int.parse(activity.date.substring(0,2)) < int.parse(day.substring(0,2))) {
+      return true;
     }
     return false;
   }

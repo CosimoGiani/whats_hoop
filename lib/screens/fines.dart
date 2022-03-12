@@ -243,75 +243,90 @@ class _FinesState extends State<Fines> {
                         ),
                         SizedBox(height: 10),
                         // DATA
-                        Row(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 10, 7, 10),
-                              child: Container(
-                                decoration: BoxDecoration(
+                        Padding(
+                          padding: EdgeInsets.only(right: 20),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: Padding(
+                                  padding: EdgeInsets.fromLTRB(20, 10, 7, 10),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.deepOrangeAccent,
+                                    ),
+                                    height: 35,
+                                    width: 150,
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.event_note_sharp, color: Colors.white),
+                                        SizedBox(width: 5),
+                                        Text(
+                                            "DATA",
+                                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                        ),
+                                      ],
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 5),
+                              Expanded(
+                                flex: 5,
+                                child: Material(
+                                  elevation: 10,
                                   borderRadius: BorderRadius.circular(10),
-                                  color: Colors.deepOrangeAccent,
-                                ),
-                                height: 35,
-                                width: 150,
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.event_note_sharp, color: Colors.white),
-                                    SizedBox(width: 5),
-                                    Text(
-                                        "DATA",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                  child: Container(
+                                    //width: 210,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Expanded(
+                                          flex: 5,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              "$dateToDisplay",
+                                              style: TextStyle(fontSize: 20),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                left: 13.7,
+                                                top: 11.8,
+                                                child: Icon(Icons.event, color: Colors.black.withAlpha(150), size: 25),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  showDatePicker(
+                                                    context: context,
+                                                    initialDate: DateTime.now(),
+                                                    firstDate: DateTime(DateTime.now().year),
+                                                    lastDate: DateTime(DateTime.now().year + 5),
+                                                  ).then((date) {
+                                                    setState(() {
+                                                      dateToDisplay = DateFormat("dd/MM/yyy").format(date!);
+                                                    });
+                                                  });
+                                                },
+                                                icon: Icon(Icons.event, color: Colors.deepOrangeAccent, size: 25),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(width: 5),
-                            Material(
-                              elevation: 10,
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                width: 210,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "$dateToDisplay",
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(35, 0, 0, 0),
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            left: 13.7,
-                                            top: 11.8,
-                                            child: Icon(Icons.event, color: Colors.black.withAlpha(150), size: 25),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              showDatePicker(
-                                                context: context,
-                                                initialDate: DateTime.now(),
-                                                firstDate: DateTime(DateTime.now().year),
-                                                lastDate: DateTime(DateTime.now().year + 5),
-                                              ).then((date) {
-                                                setState(() {
-                                                  dateToDisplay = DateFormat("dd/MM/yyy").format(date!);
-                                                });
-                                              });
-                                            },
-                                            icon: Icon(Icons.event, color: Colors.deepOrangeAccent, size: 25),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         SizedBox(height: 20),
                         ElevatedButton(

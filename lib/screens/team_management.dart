@@ -34,7 +34,6 @@ class _TeamManagementState extends State<TeamManagement> {
 
   @override
   void initState() {
-    //_buildTextFieldInvite();
     super.initState();
   }
 
@@ -91,8 +90,9 @@ class _TeamManagementState extends State<TeamManagement> {
                         padding: EdgeInsets.fromLTRB(15, 0, 0, 10),
                         child: Row(
                           children: [
-                            SizedBox(
-                              width: 300,
+                            // CAMPO AGGIUNGI EMAIL
+                            Expanded(
+                              flex: 9,
                               child: TextFormField(
                                 autofocus: false,
                                 controller: emailController,
@@ -116,27 +116,31 @@ class _TeamManagementState extends State<TeamManagement> {
                                 ),
                               ),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(top: 10),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    left: 10,
-                                    top: 9.5,
-                                    child: Icon(Icons.person_add, color: Colors.black.withAlpha(150), size: 32),
-                                  ),
-                                  IconButton(
-                                    onPressed: () async {
-                                      await invitePlayer(emailController.text, widget.teamID);
-                                      setState(() {
-                                        emailController.text = "";
-                                      });
-                                    },
-                                    icon: Icon(Icons.person_add),
-                                    color: Colors.deepOrangeAccent,
-                                    iconSize: 32,
-                                  )
-                                ],
+                            // BOTTONO ADD PLAYER
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                padding: EdgeInsets.only(top: 5, left: 5),
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      left: 10,
+                                      top: 9.5,
+                                      child: Icon(Icons.person_add, color: Colors.black.withAlpha(150), size: 32),
+                                    ),
+                                    IconButton(
+                                      onPressed: () async {
+                                        await invitePlayer(emailController.text, widget.teamID);
+                                        setState(() {
+                                          emailController.text = "";
+                                        });
+                                      },
+                                      icon: Icon(Icons.person_add),
+                                      color: Colors.deepOrangeAccent,
+                                      iconSize: 32,
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ],
