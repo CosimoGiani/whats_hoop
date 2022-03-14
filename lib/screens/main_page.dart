@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:whatshoop/screens/activities.dart';
 import 'package:whatshoop/screens/surveys.dart';
 import 'package:whatshoop/screens/team_management.dart';
-import 'package:whatshoop/screens/trainer_profile.dart';
+import 'package:whatshoop/screens/profile.dart';
 
 class MainPage extends StatefulWidget {
 
@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
       Activities(id),
       TeamManagement(id),
       Surveys(id),
-      TrainerProfile(),
+      Profile(),
     ];
     return _widgetOptions;
   }

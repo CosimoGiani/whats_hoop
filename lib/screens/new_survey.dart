@@ -255,9 +255,8 @@ class _NewSurveyState extends State<NewSurvey> {
                           } else if (options.length < 2) {
                             showErrorSnackBar(context, "Le opzioni del sondaggio devono essere almeno 2.");
                           } else {
-                            //Activity activity = await service.addNewActivity(widget.teamID, value!, dateToDisplay, timeToDisplay, placeController, notesController);
-                            await service.addNewSurvey(widget.teamID, titleToDisplay, questionToDisplay, options);
-                            Navigator.of(context).pop();
+                            Survey survey = await service.addNewSurvey(widget.teamID, titleToDisplay, questionToDisplay, options);
+                            Navigator.of(context).pop(survey);
                           }
                         },
                       ),

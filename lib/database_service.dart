@@ -20,6 +20,10 @@ class DatabaseService {
     await firestoreInstance.collection("activities").doc(activityID).delete();
   }
 
+  Future removeSurvey(String surveyID) async {
+    await firestoreInstance.collection("surveys").doc(surveyID).delete();
+  }
+
   Future<List<Team>> getTeamsFromTrainerID(String trainerID) async {
     List<Team> teamsTrainer = [];
     var teamsData = await firestoreInstance.collection("teams").where("trainerID", isEqualTo: trainerID).get();
@@ -90,7 +94,8 @@ class DatabaseService {
       String title = data["title"];
       String question = data["question"];
       List<dynamic> options = data["options"];
-      surveys.add(Survey(id: id, teamID: teamID, title: title, question: question, options: options.cast<String>()));
+      int numVotes = data["numVotes"];
+      surveys.add(Survey(id: id, teamID: teamID, title: title, question: question, options: options.cast<String>(), numVotes: numVotes));
     }
     return surveys;
   }
@@ -110,26 +115,43 @@ class DatabaseService {
     return activity;
   }
 
-  Future addNewSurvey(String teamID, String title, String question, List<String> options) async {
+  Future<Survey> addNewSurvey(String teamID, String title, String question, List<String> options) async {
     DocumentReference ref = await firestoreInstance.collection("surveys").add({
       "teamID": teamID,
       "title": title,
       "question": question,
       "options": options,
+      "numVotes": 0,
     });
     var document = firestoreInstance.collection("surveys").doc("${ref.id}");
     document.update({"id":"${ref.id}"});
+    for (int i = 0; i < options.length; i++) {
+      String name = options[i];
+      List<String> list = [];
+      document.update({name: list});
+    }
+    return Survey(id: ref.id, teamID: teamID, title: title, question: question, options: options, numVotes: 0);
+  }
+  
+  Future<List<int>> getSurveyVotes(Survey survey) async {
+    List<int> votes = [];
+    var data = (await firestoreInstance.collection("surveys").doc(survey.id).get()).data();
+    for (var value in survey.options) {
+      List<dynamic> vote = data![value];
+      votes.add(vote.length);
+    }
+    return votes;
   }
 
   Future<Player.UserModel> getUserFromID(String id) async {
     var data = (await firestoreInstance.collection("users").doc(id).get()).data();
-    return new Player.UserModel(id: data!["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
+    return Player.UserModel(id: data!["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
   }
 
   Future<Player.UserModel> getUserFromEmail(String email) async {
     var user = (await firestoreInstance.collection("users").where("email", isEqualTo: email).get()).docs;
     var data = user[0].data();
-    return new Player.UserModel(id: data["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
+    return Player.UserModel(id: data["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
   }
 
   Future sendInvite(String teamID, String userID) async {

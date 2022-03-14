@@ -14,6 +14,8 @@ class Surveys extends StatefulWidget {
 
 }
 
+// TODO ricordarsi che ogni volta che un utente vota il numVotes deve incrementare (non ancora implementato)
+
 class _SurveysState extends State<Surveys> {
 
   bool isVisible = false;
@@ -22,7 +24,6 @@ class _SurveysState extends State<Surveys> {
   final DatabaseService service = new DatabaseService();
 
   Future _loadData(String teamID) async {
-    // TODO caricare tutti i sondaggi ancora attivi
     List<Survey> surveys = await service.getSurveysByTeamID(teamID);
     activeSurveys = surveys;
   }
@@ -95,7 +96,8 @@ class _SurveysState extends State<Surveys> {
                 Row(
                   children: [
                     Icon(Icons.chat_outlined),
-                    //Text(, style: TextStyle(fontSize: 18)),
+                    SizedBox(width: 15),
+                    Text(surveys[i].numVotes.toString(), style: TextStyle(fontSize: 18)),
                     Text(" RISPOSTE", style: TextStyle(fontSize: 18)),
                   ],
                 ),
@@ -107,8 +109,8 @@ class _SurveysState extends State<Surveys> {
                 right: 0.0,
                 child: GestureDetector(
                   onTap: () async {
-                    //await service.removeTeam(teams[i]!.id);
-                    //setState(() => teams.remove(teams[i]));
+                    await service.removeSurvey(surveys[i].id);
+                    setState(() => surveys.remove(surveys[i]));
                   },
                   child: Align(
                     alignment: Alignment.topRight,
@@ -122,7 +124,7 @@ class _SurveysState extends State<Surveys> {
       ),
       onTap: () {
         if (isVisible) return;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => SurveyPage()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => SurveyPage(surveys[i])));
       },
     ),
   );

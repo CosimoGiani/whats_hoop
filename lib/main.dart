@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'WhatsHoop',
       localizationsDelegates: [GlobalMaterialLocalizations.delegate],
       supportedLocales: [const Locale('it')],
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
