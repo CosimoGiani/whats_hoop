@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whatshoop/database_service.dart';
+import 'package:whatshoop/models/user.dart';
+import 'package:whatshoop/screens/login.dart';
+import 'package:whatshoop/screens/trainer_home.dart';
 
 class Profile extends StatefulWidget {
 
@@ -9,10 +14,201 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
 
+  final DatabaseService service = new DatabaseService();
+  final authUser = FirebaseAuth.instance.currentUser;
+  late UserModel currentUser;
+  final auth = FirebaseAuth.instance;
+
+  Future _loadData() async {
+    currentUser = await service.getUserFromID(authUser!.uid);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Profilo")),
+    return FutureBuilder(
+      future: _loadData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("Profilo"),
+              centerTitle: true,
+              automaticallyImplyLeading: false,
+            ),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return Scaffold(
+          backgroundColor: Colors.grey.shade200,
+          appBar: AppBar(
+            title: Text("Profilo"),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+          ),
+          body: Column(
+            children: [
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(10, 25, 10, 5),
+                  child: Icon(Icons.account_circle_rounded, size: 70, color: Colors.red),
+                ),
+              ),
+              Center(
+                child: Text(
+                  currentUser.firstName,
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 25, 20, 5),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.deepOrangeAccent.withOpacity(0.7),
+                        spreadRadius: 0.5,
+                        blurRadius: 3,
+                        offset: Offset(3, 2),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Center(
+                      child: Text("I tuoi dati personali", style: TextStyle(fontSize: 20, color: Colors.white)),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(35, 15, 35, 5),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        spreadRadius: 0.5,
+                        blurRadius: 7,
+                        offset: Offset(3, 4),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Stack(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text("Nome", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                        ),
+                        Container(
+                          alignment: Alignment.centerRight,
+                          child: Text(currentUser.firstName, style: TextStyle(fontSize: 17)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(35, 5, 35, 5),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        spreadRadius: 0.5,
+                        blurRadius: 7,
+                        offset: Offset(3, 4),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Stack(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text("Cognome", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                        ),
+                        Container(
+                          alignment: Alignment.centerRight,
+                          child: Text(currentUser.lastName, style: TextStyle(fontSize: 17)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(35, 5, 35, 5),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        spreadRadius: 0.5,
+                        blurRadius: 7,
+                        offset: Offset(3, 4),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Stack(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text("E-mail", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                        ),
+                        Container(
+                          alignment: Alignment.centerRight,
+                          child: Text(currentUser.email, style: TextStyle(fontSize: 17)),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
+                child: RaisedButton(
+                  color: Colors.deepOrangeAccent,
+                  child: Text("Torna alle tue squadre", style: TextStyle(color: Colors.white, fontSize: 22)),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => TrainerHome()));
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(70, 10, 70, 0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    onSurface: Colors.deepOrangeAccent,
+                    elevation: 7,
+                    padding: EdgeInsets.fromLTRB(35, 10, 35, 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text("Esci", style: TextStyle(color: Colors.white, fontSize: 22)),
+                  onPressed: () {
+                    auth.signOut();
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
