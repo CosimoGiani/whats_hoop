@@ -31,11 +31,13 @@ class _FinesState extends State<Fines> {
   List<Fine> finesToDisplay = [];
   final DatabaseService service = new DatabaseService();
   String debtToDisplay = "";
+  bool initialization = false;
 
   Future _loadData(String playerID) async {
     List<Fine> fines = await service.getFinesFromPlayerID(playerID);
     finesToDisplay = fines;
     debtToDisplay = sumFines(fines);
+    initialization = true;
   }
 
   @override
@@ -43,7 +45,7 @@ class _FinesState extends State<Fines> {
     return FutureBuilder(
         future: _loadData(widget.playerID),
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
+          if (snapshot.connectionState != ConnectionState.done && !initialization) {
             return Scaffold(
               appBar: AppBar(title: Text(""),
                   centerTitle: false,

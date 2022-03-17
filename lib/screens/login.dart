@@ -1,5 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
+import 'package:whatshoop/models/user.dart';
+import 'package:whatshoop/screens/athlete_home.dart';
+import 'package:whatshoop/screens/main_page.dart';
 import 'package:whatshoop/screens/registration.dart';
 import 'package:whatshoop/screens/trainer_home.dart';
 import 'package:whatshoop/database_service.dart';
@@ -179,19 +183,63 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
-  // TODO aggiungere aggiungere comando per andare nella schermata giocatore
-
   Future login(String email, String password) async {
     if (_formKey.currentState!.validate()) {
       await _authentication.signInWithEmailAndPassword(email: email, password: password)
           .then((id) async {
-        if ((await service.getUserFromID(_authentication.currentUser!.uid)).type == 1) {
+        UserModel userModel = await service.getUserFromID(_authentication.currentUser!.uid);
+        if (userModel.type == 1) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => TrainerHome()));
-        } else {}
+        } else if (userModel.teamID!.trim().isNotEmpty) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainPage(userModel.teamID!)));
+        } else {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AthleteHome()));
+        }
       });
     }
   }
+      /*try {
+        await _authentication.signInWithEmailAndPassword(email: email, password: password)
+            .then((id) async {
+          UserModel userModel = await service.getUserFromID(_authentication.currentUser!.uid);
+          if (userModel.type == 1) {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => TrainerHome()));
+          } else if (userModel.teamID!.trim().isNotEmpty) {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainPage(userModel.teamID!)));
+          } else {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AthleteHome()));
+          }
+        });
+      } on FirebaseAuthException catch (error) {
+        switch (error.code) {
+          case "ERROR_EMAIL_ALREADY_IN_USE":
+          case "account-exists-with-different-credential":
+          case "email-already-in-use":
+            return "Email already used. Go to login page.";
+          case "ERROR_WRONG_PASSWORD":
+          case "wrong-password":
+            return "Wrong email/password combination.";
+          case "ERROR_USER_NOT_FOUND":
+          case "user-not-found":
+            //return "No user found with this email.";
+            print(error);
+            //break;
+            //_showToast("Nessun utente trovato con questa email.");
+            break;
+          case "ERROR_INVALID_EMAIL":
+          case "invalid-email":
+            return "Email address is invalid.";
+          default:
+            return "Login failed. Please try again.";
+        }
+      }
+    }
+  }
+
+  void _showToast(String message) => Fluttertoast.showToast(
+      msg: message,
+      fontSize: 18
+  );*/
 
 }
 

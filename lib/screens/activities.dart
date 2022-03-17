@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:whatshoop/models/activity.dart';
 import 'package:whatshoop/screens/new_activity.dart';

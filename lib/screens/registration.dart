@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:whatshoop/screens/athlete_home.dart';
 import 'package:whatshoop/screens/trainer_home.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -289,7 +290,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => TrainerHome()), (route) => false);
     }
     if (selectedValue == 2) {
-      // TODO fare andare sulla pagina dell'atlelta se ci si registra come giocatori
+      Navigator.pushAndRemoveUntil((context), MaterialPageRoute(builder: (context) => AthleteHome()), (route) => false);
     }
   }
 

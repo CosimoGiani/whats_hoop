@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatshoop/models/survey.dart';
-import 'models/activity.dart';
+import 'package:whatshoop/models/activity.dart';
 import 'package:whatshoop/models/user.dart' as Player;
-import 'models/fine.dart';
-import 'models/team.dart';
+import 'package:whatshoop/models/fine.dart';
+import 'package:whatshoop/models/team.dart';
 
 class DatabaseService {
 
@@ -154,6 +154,18 @@ class DatabaseService {
     return Player.UserModel(id: data["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
   }
 
+  Future<Team> getTeamFromID(String id) async {
+    var data = (await firestoreInstance.collection("teams").doc(id).get()).data();
+    return Team(id: data!["id"], name: data["name"], numPartecipants: int.parse(data["numPartecipants"]), trainerID: data["trainerID"]);
+  }
+
+  Future<Team> getTeamInviteFromUserID(String userID) async {
+    var docs = (await firestoreInstance.collection("team_invitations").where("userID", isEqualTo: userID).get()).docs;
+    var data = docs[0].data();
+    Team team = await getTeamFromID(data["teamID"]);
+    return team;
+  }
+
   Future sendInvite(String teamID, String userID) async {
     String? userTeamID = (await getUserFromID(userID)).teamID;
     if (userTeamID != teamID) {
@@ -161,6 +173,15 @@ class DatabaseService {
         "teamID": teamID,
         "userID": userID,
       });
+    }
+  }
+
+  Future<bool> checkInvite(String userID) async {
+    var invite = (await firestoreInstance.collection("team_invitations").where("userID", isEqualTo: userID).get()).docs;
+    if (invite.isNotEmpty) {
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -205,6 +226,28 @@ class DatabaseService {
 
   Future removeFine(String fineID) async {
     await firestoreInstance.collection("fines").doc(fineID).delete();
+  }
+
+  Future acceptInvite(String userID, String teamID) async {
+    await firestoreInstance.collection("team_invitations").where("userID", isEqualTo: userID).get()
+    .then((value) {
+      for (var element in value.docs) {
+        firestoreInstance.collection("team_invitations").doc(element.id).delete();
+      }
+    });
+    await firestoreInstance.collection("users").doc(userID).update({"teamID": teamID});
+  }
+
+  Future rejectInvite(String userID, String teamID) async {
+    await firestoreInstance.collection("team_invitations").where("userID", isEqualTo: userID).get()
+    .then((value) {
+      for (var element in value.docs) {
+        var data = element.data();
+        if (teamID == data["teamID"]) {
+          firestoreInstance.collection("team_invitations").doc(element.id).delete();
+        }
+      }
+    });
   }
 
 }
