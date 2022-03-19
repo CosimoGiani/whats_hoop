@@ -143,6 +143,52 @@ class DatabaseService {
     return votes;
   }
 
+  Future<int> getNumVotesFromSurvey(Survey survey) async {
+    var data = (await firestoreInstance.collection("surveys").doc(survey.id).get()).data();
+    return data!["numVotes"];
+  }
+
+  Future userVote(Survey survey, String userID, String optionVoted, bool valueOptionVoted) async {
+    var document = await firestoreInstance.collection("surveys").doc(survey.id);
+    var data = (await firestoreInstance.collection("surveys").doc(survey.id).get()).data();
+    for (var option in survey.options) {
+      // se clicca su una risposta e non è selezionata di già
+      if (option == optionVoted && valueOptionVoted) {
+        List<dynamic> votes = data![option];
+        // se è già selezionata un'altra risposta viene rimosso il voto e "resetatto" nel db
+        for (var opt in survey.options) {
+          List<dynamic> test = data[opt];
+          if (test.contains(userID)) {
+            test.removeWhere((element) => element == userID);
+            int newNum = await getNumVotesFromSurvey(survey);
+            await document.update({opt: test, "numVotes": newNum - 1});
+          }
+        }
+        // aggiunge il voto della risposta selezionata
+        votes.add(userID);
+        int newNumVotes = await getNumVotesFromSurvey(survey);
+        await document.update({optionVoted: votes, "numVotes": newNumVotes + 1});
+      }
+      // se clicca su una risposta che è già selezionata la deseleziona
+      if (option == optionVoted && !valueOptionVoted) {
+        List<dynamic> votes = data![option];
+        votes.removeWhere((element) => element == userID);
+        int newNumVotes = await getNumVotesFromSurvey(survey);
+        document.update({optionVoted: votes, "numVotes": newNumVotes - 1});
+      }
+    }
+  }
+
+  Future<bool> getCheckboxValue(Survey survey, String userID, String element) async {
+    var data = (await firestoreInstance.collection("surveys").doc(survey.id).get()).data();
+    List<dynamic> votes = data![element];
+    if (votes.contains(userID)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<Player.UserModel> getUserFromID(String id) async {
     var data = (await firestoreInstance.collection("users").doc(id).get()).data();
     return Player.UserModel(id: data!["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
@@ -236,6 +282,8 @@ class DatabaseService {
       }
     });
     await firestoreInstance.collection("users").doc(userID).update({"teamID": teamID});
+    Team teamToUpdate = await getTeamFromID(teamID);
+    await firestoreInstance.collection("teams").doc(teamID).update({"numPartecipants": teamToUpdate.numPartecipants + 1});
   }
 
   Future rejectInvite(String userID, String teamID) async {
@@ -248,6 +296,12 @@ class DatabaseService {
         }
       }
     });
+  }
+
+  Future removeAthleteFromTeam(String userID, String teamID) async {
+    await firestoreInstance.collection("users").doc(userID).update({"teamID": ""});
+    Team teamToUpdate = await getTeamFromID(teamID);
+    await firestoreInstance.collection("teams").doc(teamID).update({"numPartecipants": teamToUpdate.numPartecipants - 1});
   }
 
 }

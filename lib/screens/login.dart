@@ -191,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (userModel.type == 1) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => TrainerHome()));
         } else if (userModel.teamID!.trim().isNotEmpty) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainPage(userModel.teamID!)));
+          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainPage(userModel.teamID!, "athlete")));
         } else {
           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AthleteHome()));
         }

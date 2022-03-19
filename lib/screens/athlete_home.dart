@@ -116,7 +116,7 @@ class _AthleteHomeState extends State<AthleteHome> {
                                       onTap: () async {
                                         await service.acceptInvite(_authUser!.uid, team.id);
                                         UserModel userModel = await service.getUserFromID(_authUser!.uid);
-                                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainPage(userModel.teamID!)));
+                                        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainPage(userModel.teamID!, "athlete")));
                                       },
                                     ),
                                   ),

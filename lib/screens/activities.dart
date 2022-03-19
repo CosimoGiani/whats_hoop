@@ -7,12 +7,16 @@ import 'package:intl/intl.dart';
 class Activities extends StatefulWidget {
 
   String teamID;
-  Activities(this.teamID);
+  String mode;
+  Activities(this.teamID, this.mode);
 
   @override
   _ActivitiesState createState() => _ActivitiesState();
 
 }
+
+// TODO quando viene aggiunta un'attività deve partire il relativo sondaggio
+// TODO quando viene rimossa un'attività deve essere rimosso il relativo sondaggio
 
 class _ActivitiesState extends State<Activities> {
 
@@ -52,51 +56,85 @@ class _ActivitiesState extends State<Activities> {
     return false;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget getTrainerView() {
     return FutureBuilder(
-      future: _loadData(widget.teamID),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
+        future: _loadData(widget.teamID),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Scaffold(
+              appBar: AppBar(title: Text("Attività programmate"), centerTitle: false, automaticallyImplyLeading: false),
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
           return Scaffold(
-            appBar: AppBar(title: Text("Attività programmate"), centerTitle: false, automaticallyImplyLeading: false),
-            body: Center(child: CircularProgressIndicator()),
+            backgroundColor: Colors.grey.shade200,
+            appBar: AppBar(
+              title: Text("Attività programmate"),
+              centerTitle: false,
+              automaticallyImplyLeading: false,
+              actions: <Widget>[
+                FlatButton(
+                  textColor: Colors.white,
+                  onPressed: () => setState(() => (isVisible = !isVisible) & (modify = !modify)),
+                  child: modify ? Text("RIMUOVI") : Text("FATTO"),
+                  shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+                ),
+              ],
+            ),
+            floatingActionButton: !isVisible ? FloatingActionButton(
+              elevation: 10,
+              child: Icon(Icons.add),
+              onPressed: () async {
+                final activity = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewActivity(widget.teamID)));
+                setState(() => scheduledActivities.add(activity));
+              },
+            ) : null,
+            body: scheduledActivities.isEmpty
+                ? Center(child: Text("Nessuna attività programmata", style: TextStyle(fontSize: 18)))
+                : ListView.separated(
+                padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+                itemCount: scheduledActivities.length,
+                itemBuilder: (_, i) => createCard(scheduledActivities, i),
+                separatorBuilder: (context, index) => SizedBox(height: 20)
+            ),
           );
         }
-        return Scaffold(
-          backgroundColor: Colors.grey.shade200,
-          appBar: AppBar(
-            title: Text("Attività programmate"),
-            centerTitle: false,
-            automaticallyImplyLeading: false,
-            actions: <Widget>[
-              FlatButton(
-                textColor: Colors.white,
-                onPressed: () => setState(() => (isVisible = !isVisible) & (modify = !modify)),
-                child: modify ? Text("RIMUOVI") : Text("FATTO"),
-                shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-              ),
-            ],
-          ),
-          floatingActionButton: !isVisible ? FloatingActionButton(
-            elevation: 10,
-            child: Icon(Icons.add),
-            onPressed: () async {
-              final activity = await Navigator.push(context, MaterialPageRoute(builder: (context) => NewActivity(widget.teamID)));
-              setState(() => scheduledActivities.add(activity));
-            },
-          ) : null,
-          body: scheduledActivities.isEmpty
-              ? Center(child: Text("Nessuna attività programmata", style: TextStyle(fontSize: 18)))
-              : ListView.separated(
-                  padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                  itemCount: scheduledActivities.length,
-                  itemBuilder: (_, i) => createCard(scheduledActivities, i),
-                  separatorBuilder: (context, index) => SizedBox(height: 20)
-          ),
-        );
-      }
     );
+  }
+
+  Widget getAthleteView() {
+    return FutureBuilder(
+        future: _loadData(widget.teamID),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return Scaffold(
+              appBar: AppBar(title: Text("Attività programmate"), centerTitle: false, automaticallyImplyLeading: false),
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          return Scaffold(
+            backgroundColor: Colors.grey.shade200,
+            appBar: AppBar(
+              title: Text("Attività programmate"),
+              centerTitle: false,
+              automaticallyImplyLeading: false,
+            ),
+            body: scheduledActivities.isEmpty
+                ? Center(child: Text("Nessuna attività programmata", style: TextStyle(fontSize: 18)))
+                : ListView.separated(
+                padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+                itemCount: scheduledActivities.length,
+                itemBuilder: (_, i) => createCard(scheduledActivities, i),
+                separatorBuilder: (context, index) => SizedBox(height: 20)
+            ),
+          );
+        }
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (widget.mode == "trainer") ? getTrainerView() : getAthleteView();
   }
 
   createCard(List<Activity> activities, int i) => Card(

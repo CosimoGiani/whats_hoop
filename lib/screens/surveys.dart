@@ -7,14 +7,13 @@ import 'package:whatshoop/screens/survey_page.dart';
 class Surveys extends StatefulWidget {
 
   String teamID;
-  Surveys(this.teamID);
+  String mode;
+  Surveys(this.teamID, this.mode);
 
   @override
   _SurveysState createState() => _SurveysState();
 
 }
-
-// TODO ricordarsi che ogni volta che un utente vota il numVotes deve incrementare (non ancora implementato)
 
 class _SurveysState extends State<Surveys> {
 
@@ -28,8 +27,7 @@ class _SurveysState extends State<Surveys> {
     activeSurveys = surveys;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget getTrainerView() {
     return FutureBuilder(
       future: _loadData(widget.teamID),
       builder: (context, snapshot) {
@@ -68,14 +66,52 @@ class _SurveysState extends State<Surveys> {
           body: activeSurveys.isEmpty
               ? Center(child: Text("Nessuna sondaggio attivo", style: TextStyle(fontSize: 18)))
               : ListView.separated(
-                  padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
-                  itemCount: activeSurveys.length,
-                  itemBuilder: (_, i) => createCard(activeSurveys, i),
-                  separatorBuilder: (context, index) => SizedBox(height: 20)
+              padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+              itemCount: activeSurveys.length,
+              itemBuilder: (_, i) => createCard(activeSurveys, i),
+              separatorBuilder: (context, index) => SizedBox(height: 20)
           ),
         );
       },
     );
+  }
+
+  Widget getAthleteView() {
+    return FutureBuilder(
+      future: _loadData(widget.teamID),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return Scaffold(
+            appBar: AppBar(title: Text("Sondaggi"),
+                centerTitle: false,
+                automaticallyImplyLeading: false
+            ),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        return Scaffold(
+          backgroundColor: Colors.grey.shade200,
+          appBar: AppBar(
+            title: Text("Sondaggi"),
+            centerTitle: false,
+            automaticallyImplyLeading: false,
+          ),
+          body: activeSurveys.isEmpty
+              ? Center(child: Text("Nessuna sondaggio attivo", style: TextStyle(fontSize: 18)))
+              : ListView.separated(
+              padding: EdgeInsets.fromLTRB(15, 20, 15, 20),
+              itemCount: activeSurveys.length,
+              itemBuilder: (_, i) => createCard(activeSurveys, i),
+              separatorBuilder: (context, index) => SizedBox(height: 20)
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (widget.mode == "trainer") ? getTrainerView() : getAthleteView();
   }
 
   createCard(List<Survey> surveys, int i) => Card(
@@ -124,7 +160,7 @@ class _SurveysState extends State<Surveys> {
       ),
       onTap: () {
         if (isVisible) return;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => SurveyPage(surveys[i])));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => SurveyPage(surveys[i], widget.mode)));
       },
     ),
   );

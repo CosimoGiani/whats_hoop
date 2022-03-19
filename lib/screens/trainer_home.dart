@@ -132,7 +132,7 @@ class _TrainerHomeState extends State<TrainerHome> {
       ),
       onTap: () {
         if (isVisible) return;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage(teams[i]!.id)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage(teams[i]!.id, "trainer")));
       },
     ),
   );

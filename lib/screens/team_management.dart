@@ -7,20 +7,20 @@ import 'package:whatshoop/screens/fines.dart';
 class TeamManagement extends StatefulWidget {
 
   String teamID;
-  TeamManagement(this.teamID);
+  String mode;
+  TeamManagement(this.teamID, this.mode);
 
   @override
   _TeamManagementState createState() => _TeamManagementState();
 
 }
 
-// TODO quando utente accetta deve aggiornare il numPartecipants del team
-
 class _TeamManagementState extends State<TeamManagement> {
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = new TextEditingController();
-  List<Team?> teams = [];
+  //List<Team?> teams = [];
+  late Player.UserModel trainer;
   final DatabaseService service = new DatabaseService();
   late TextField newInvite;
   bool initialization = false;
@@ -30,6 +30,8 @@ class _TeamManagementState extends State<TeamManagement> {
     List<Player.UserModel> playersToLoad = await service.getPlayersFromTeamID(teamID);
     players = playersToLoad;
     initialization = true;
+    Team team = await service.getTeamFromID(teamID);
+    trainer = await service.getUserFromID(team.trainerID);
   }
 
   @override
@@ -37,151 +39,248 @@ class _TeamManagementState extends State<TeamManagement> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget getTrainerView() {
     return FutureBuilder(
-      future: _loadData(widget.teamID),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done && !initialization) {
+        future: _loadData(widget.teamID),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done && !initialization) {
+            return Scaffold(
+              appBar: AppBar(title: Text("Gestisci la tua squadra"),
+                  centerTitle: false,
+                  automaticallyImplyLeading: false
+              ),
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
           return Scaffold(
-            appBar: AppBar(title: Text("Gestisci la tua squadra"),
-                centerTitle: false,
-                automaticallyImplyLeading: false
+            backgroundColor: Colors.grey.shade200,
+            appBar: AppBar(
+              title: Text("Gestisci la tua squadra"),
+              centerTitle: false,
+              automaticallyImplyLeading: false,
             ),
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
-        return Scaffold(
-          backgroundColor: Colors.grey.shade200,
-          appBar: AppBar(
-            title: Text("Gestisci la tua squadra"),
-            centerTitle: false,
-            automaticallyImplyLeading: false,
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                // AGGIUNGI ATLETA
-                SizedBox(height: 20),
-                Container(
-                  color: Colors.orange.shade500,
-                  alignment: Alignment.center,
-                  height: 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                        child: Text("AGGIUNGI ATLETA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                      ),
-                    ],
-                  ),
-                ),
-                // INVITO
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 30),
-                  child: Material(
-                    elevation: 15,
-                    shadowColor: Colors.grey,
-                    borderRadius: BorderRadius.circular(10),
-                    child: Form(
-                      key: _formKey,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(15, 0, 0, 10),
-                        child: Row(
-                          children: [
-                            // CAMPO AGGIUNGI EMAIL
-                            Expanded(
-                              flex: 9,
-                              child: TextFormField(
-                                autofocus: false,
-                                controller: emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return ("Per favore inserire una mail");
-                                  }
-                                  if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)) {
-                                    return ("Per favore inserire una mail valida");
-                                  }
-                                  return null;
-                                },
-                                onSaved: (value) {
-                                  emailController.text = value!;
-                                },
-                                textInputAction: TextInputAction.done,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.only(top: 10),
-                                  hintText: "Inserisci email atleta...",
-                                ),
-                              ),
-                            ),
-                            // BOTTONO ADD PLAYER
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                padding: EdgeInsets.only(top: 5, left: 5),
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      left: 10,
-                                      top: 9.5,
-                                      child: Icon(Icons.person_add, color: Colors.black.withAlpha(150), size: 32),
-                                    ),
-                                    IconButton(
-                                      onPressed: () async {
-                                        await invitePlayer(emailController.text, widget.teamID);
-                                        setState(() {
-                                          emailController.text = "";
-                                        });
-                                      },
-                                      icon: Icon(Icons.person_add),
-                                      color: Colors.deepOrangeAccent,
-                                      iconSize: 32,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // AGGIUNGI ATLETA
+                  SizedBox(height: 20),
+                  Container(
+                    color: Colors.orange.shade500,
+                    alignment: Alignment.center,
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                          child: Text("AGGIUNGI ATLETA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                         ),
-                      )
+                      ],
                     ),
                   ),
-                ),
-                // LA TUA SQUADRA
-                Container(
-                  alignment: Alignment.center,
-                  height: 50,
-                  color: Colors.orange.shade500,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                        child: Text("LA TUA SQUADRA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  // INVITO
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 30),
+                    child: Material(
+                      elevation: 15,
+                      shadowColor: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Form(
+                          key: _formKey,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(15, 0, 0, 10),
+                            child: Row(
+                              children: [
+                                // CAMPO AGGIUNGI EMAIL
+                                Expanded(
+                                  flex: 9,
+                                  child: TextFormField(
+                                    autofocus: false,
+                                    controller: emailController,
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return ("Per favore inserire una mail");
+                                      }
+                                      if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)) {
+                                        return ("Per favore inserire una mail valida");
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) {
+                                      emailController.text = value!;
+                                    },
+                                    textInputAction: TextInputAction.done,
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.only(top: 10),
+                                      hintText: "Inserisci email atleta...",
+                                    ),
+                                  ),
+                                ),
+                                // BOTTONO ADD PLAYER
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    padding: EdgeInsets.only(top: 5, left: 5),
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                          left: 10,
+                                          top: 9.5,
+                                          child: Icon(Icons.person_add, color: Colors.black.withAlpha(150), size: 32),
+                                        ),
+                                        IconButton(
+                                          onPressed: () async {
+                                            await invitePlayer(emailController.text, widget.teamID);
+                                            setState(() {
+                                              emailController.text = "";
+                                            });
+                                          },
+                                          icon: Icon(Icons.person_add),
+                                          color: Colors.deepOrangeAccent,
+                                          iconSize: 32,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                       ),
-                    ],
+                    ),
                   ),
-                ),
-                // LISTA GIOCATORI
-                Container(
-                  child: players.isEmpty
-                       ? SizedBox(height: 300, child: Center(child: Text("Nessun giocatore invitato", style: TextStyle(fontSize: 18))))
-                       : ListView.separated(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.fromLTRB(15, 5, 15, 20),
-                          itemCount: players.length,
-                          itemBuilder: (_, i) => createCard(players, i),
-                          separatorBuilder: (context, index) => SizedBox(height: 20)
+                  // LA TUA SQUADRA
+                  Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    color: Colors.orange.shade500,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                          child: Text("LA TUA SQUADRA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  // LISTA GIOCATORI
+                  Container(
+                    child: players.isEmpty
+                        ? SizedBox(height: 300, child: Center(child: Text("Nessun giocatore invitato", style: TextStyle(fontSize: 18))))
+                        : ListView.separated(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.fromLTRB(15, 5, 15, 20),
+                        itemCount: players.length,
+                        itemBuilder: (_, i) => createCard(players, i),
+                        separatorBuilder: (context, index) => SizedBox(height: 20)
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      }
+          );
+        }
     );
+  }
+
+  Widget getAthleteView() {
+    return FutureBuilder(
+        future: _loadData(widget.teamID),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done && !initialization) {
+            return Scaffold(
+              appBar: AppBar(title: Text("La squadra"),
+                  centerTitle: false,
+                  automaticallyImplyLeading: false
+              ),
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          return Scaffold(
+            backgroundColor: Colors.grey.shade200,
+            appBar: AppBar(
+              title: Text("La squadra"),
+              centerTitle: false,
+              automaticallyImplyLeading: false,
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  Container(
+                    color: Colors.orange.shade500,
+                    alignment: Alignment.center,
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                          child: Text("Allenatore", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // ALLENATORE
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 30),
+                    child: Material(
+                      elevation: 15,
+                      shadowColor: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Form(
+                          key: _formKey,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(20, 15, 0, 15),
+                            child: Row(
+                              children: [
+                                Text("${trainer.firstName} ${trainer.lastName}", style: TextStyle(fontSize: 20)),
+                              ],
+                            ),
+                          )
+                      ),
+                    ),
+                  ),
+                  // ATLETI
+                  Container(
+                    alignment: Alignment.center,
+                    height: 50,
+                    color: Colors.orange.shade500,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                          child: Text("Atleti", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // LISTA GIOCATORI
+                  Container(
+                    child: players.isEmpty
+                        ? SizedBox(height: 300, child: Center(child: Text("Nessun giocatore invitato", style: TextStyle(fontSize: 18))))
+                        : ListView.separated(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.fromLTRB(15, 5, 15, 20),
+                        itemCount: players.length,
+                        itemBuilder: (_, i) => createCardAthlete(players, i),
+                        separatorBuilder: (context, index) => SizedBox(height: 20)
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (widget.mode == "trainer") ? getTrainerView() : getAthleteView();
   }
 
   Future invitePlayer(String email, String teamID) async {
@@ -196,8 +295,8 @@ class _TeamManagementState extends State<TeamManagement> {
     }
   }
 
-  void removePlayer() {
-    // TODO logica per rimuovere l'utente dalla squadra
+  Future removePlayer(String userID, String teamID) async {
+    await service.removeAthleteFromTeam(userID, teamID);
   }
 
   void showErrorSnackBar(BuildContext context, String message) {
@@ -269,7 +368,7 @@ class _TeamManagementState extends State<TeamManagement> {
                 ),
                 IconButton(
                   onPressed: () {
-                    showRemoveDialog();
+                    showRemoveDialog(players[i].id);
                   },
                   icon: Icon(Icons.person_remove),
                   color: Colors.deepOrangeAccent,
@@ -283,7 +382,26 @@ class _TeamManagementState extends State<TeamManagement> {
     ),
   );
 
-  Future showRemoveDialog() => showDialog(
+  createCardAthlete(List<Player.UserModel> players, int i) => Card(
+    shadowColor: Colors.grey,
+    elevation: 10,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    color: Colors.white,
+    child: Container(
+      padding: EdgeInsets.fromLTRB(20, 15, 0, 15),
+      child: Row(
+        children: [
+          // NOME GIOCATORE
+          Expanded(
+            flex: 8,
+            child: Text("${players[i].firstName} ${players[i].lastName}", style: TextStyle(fontSize: 20)),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  Future showRemoveDialog(String userID) => showDialog(
     context: context,
     builder: (context) => Dialog(
       shape: RoundedRectangleBorder(
@@ -321,10 +439,9 @@ class _TeamManagementState extends State<TeamManagement> {
                     borderRadius: BorderRadius.circular(30),
                     color: Colors.deepOrangeAccent,
                     child: MaterialButton(
-                      //padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                       minWidth: MediaQuery.of(context).size.width * 0.2,
-                      onPressed: () {
-                        // TODO richiamare il metodo remove
+                      onPressed: () async {
+                        await removePlayer(userID, widget.teamID);
                       },
                       child: Text(
                         "Sì",

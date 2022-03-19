@@ -7,8 +7,8 @@ import 'package:whatshoop/screens/profile.dart';
 class MainPage extends StatefulWidget {
 
   String teamID;
-
-  MainPage(this.teamID);
+  String mode;
+  MainPage(this.teamID, this.mode);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -19,12 +19,12 @@ class _MainPageState extends State<MainPage> {
 
   int _selectedIndex = 0;
 
-  List<Widget> _widgetsBar(String id) {
+  List<Widget> _widgetsBar(String id, String mode) {
     final List<Widget> _widgetOptions = <Widget>[
-      Activities(id),
-      TeamManagement(id),
-      Surveys(id),
-      Profile(),
+      Activities(id, mode),
+      TeamManagement(id, mode),
+      Surveys(id, mode),
+      Profile(mode),
     ];
     return _widgetOptions;
   }
@@ -39,7 +39,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: _widgetsBar(widget.teamID)[_selectedIndex],
+      body: _widgetsBar(widget.teamID, widget.mode)[_selectedIndex],
       bottomNavigationBar: SizedBox(
         height: size.height * 0.1,
         child: BottomNavigationBar(
