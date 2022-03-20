@@ -117,7 +117,9 @@ class _SurveyPageState extends State<SurveyPage> {
                   ),
                   Container(
                     height: 350,
-                    child: SfCircularChart(
+                    child: widget.survey.numVotes == 0
+                      ? Center(child: Text("Nessun giocatore ha ancora votato", style: TextStyle(fontSize: 20)))
+                      : SfCircularChart(
                       legend: Legend(
                         isVisible: true,
                         position: LegendPosition.bottom,

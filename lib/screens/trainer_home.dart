@@ -20,8 +20,10 @@ class _TrainerHomeState extends State<TrainerHome> {
   late TextEditingController nameController;
   List<Team?> teams = [];
   bool isVisible = false;
-  bool modify = true;
+  bool remove = true;
   final DatabaseService service = new DatabaseService();
+  static const itemRemove = MenuItem(text: "Elimina", icon: Icons.delete);
+  static const List<MenuItem> items = [itemRemove];
 
   @override
   void initState() {
@@ -59,10 +61,17 @@ class _TrainerHomeState extends State<TrainerHome> {
             centerTitle: false,
             automaticallyImplyLeading: false,
             actions: <Widget>[
+              remove
+              ? PopupMenuButton<MenuItem>(
+                  onSelected: (item) => onSelected(context, item),
+                  itemBuilder: (context) => [
+                    ...items.map(buildItem).toList(),
+                  ],
+              ) :
               FlatButton(
                 textColor: Colors.white,
-                onPressed: () => setState(() => (isVisible = !isVisible) & (modify = !modify)),
-                child: modify ? Text("RIMUOVI") : Text("FATTO"),
+                onPressed: () => setState(() => (isVisible = !isVisible) & (remove = !remove)),
+                child: remove ? Text("RIMUOVI") : Text("FATTO"),
                 shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
               ),
             ],
@@ -217,4 +226,30 @@ class _TrainerHomeState extends State<TrainerHome> {
       ),
   );
 
+  PopupMenuItem<MenuItem> buildItem(MenuItem item) => PopupMenuItem<MenuItem>(
+    value: item,
+    child: Row(
+      children: [
+        Icon(item.icon, color: Colors.black, size: 20),
+        const SizedBox(width: 12),
+        Text(item.text)
+      ],
+    ),
+  );
+
+  void onSelected(BuildContext context, MenuItem item) {
+    switch (item) {
+      case itemRemove:
+        setState(() => (isVisible = !isVisible) & (remove = !remove));
+        break;
+    }
+  }
+
+}
+
+class MenuItem {
+  final String text;
+  final IconData icon;
+
+  const MenuItem({required this.text, required this.icon});
 }

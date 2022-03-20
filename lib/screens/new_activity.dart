@@ -3,18 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:whatshoop/database_service.dart';
 import 'package:whatshoop/models/activity.dart';
+import 'package:whatshoop/screens/main_page.dart';
 
 class NewActivity extends StatefulWidget {
 
-  String teamID;
-  NewActivity(this.teamID);
+  late String teamID;
+  late String mode;
+  late Activity activity;
+  NewActivity(this.teamID, this.mode);
+  NewActivity.modify(this.teamID, this.mode, this.activity);
 
   @override
   _NewActivityState createState() => _NewActivityState();
 
 }
-
-// TODO quando si aggiunge un'attività deve partire in automatico il relativo sondaggio
 
 class _NewActivityState extends State<NewActivity> {
 
@@ -34,7 +36,18 @@ class _NewActivityState extends State<NewActivity> {
   bool hourSelectedNow = false;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    if (widget.mode == "modify") {
+      value = widget.activity.type;
+      dateToDisplay = widget.activity.date;
+      timeToDisplay = widget.activity.time;
+      placeToDisplay = widget.activity.place;
+      notesToDisplay = widget.activity.notes;
+    }
+    super.initState();
+  }
+
+  Widget getCreateView() {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey.shade200,
@@ -46,206 +59,206 @@ class _NewActivityState extends State<NewActivity> {
         child: Column(
           children: [
             Container(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(20, 30, 20, 25),
-                  child: Column(
-                    children: <Widget>[
-                      // TIPO
-                      Row(
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.deepOrangeAccent,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(20, 30, 20, 25),
+                child: Column(
+                  children: <Widget>[
+                    // TIPO
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.deepOrangeAccent,
+                            ),
+                            height: 35,
+                            width: 120,
+                            child: Row(
+                              children: [
+                                Icon(Icons.sports_basketball, color: Colors.white),
+                                SizedBox(width: 5),
+                                Text(
+                                    "TIPO",
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
                                 ),
-                                height: 35,
-                                width: 120,
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.sports_basketball, color: Colors.white),
-                                    SizedBox(width: 5),
-                                    Text(
-                                        "TIPO",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                                    ),
-                                  ],
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          flex: 8,
+                          child: Material(
+                            elevation: 20,
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: 240,
+                              padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: value,
+                                  iconSize: 30,
+                                  isExpanded: true,
+                                  icon: Icon(Icons.arrow_drop_down, color: Colors.deepOrangeAccent),
+                                  items: types.map(buildMenuType).toList(),
+                                  onChanged: (value) {setState(() => this.value = value);},
                                 ),
                               ),
                             ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              flex: 8,
-                              child: Material(
-                                elevation: 20,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  width: 240,
-                                  padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: value,
-                                      iconSize: 30,
-                                      isExpanded: true,
-                                      icon: Icon(Icons.arrow_drop_down, color: Colors.deepOrangeAccent),
-                                      items: types.map(buildMenuType).toList(),
-                                      onChanged: (value) {setState(() => this.value = value);},
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 25),
+                    // DATA
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.deepOrangeAccent,
+                            ),
+                            height: 35,
+                            width: 120,
+                            child: Row(
+                              children: [
+                                Icon(Icons.event_note_sharp, color: Colors.white),
+                                SizedBox(width: 5),
+                                Text(
+                                    "DATA",
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          flex: 8,
+                          child: Material(
+                            elevation: 20,
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //width: 240,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    flex: 7,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 17),
+                                      child: Text(
+                                        "$dateToDisplay",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      SizedBox(height: 25),
-                      // DATA
-                      Row(
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.deepOrangeAccent,
-                                ),
-                                height: 35,
-                                width: 120,
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.event_note_sharp, color: Colors.white),
-                                    SizedBox(width: 5),
-                                    Text(
-                                        "DATA",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                                    ),
-                                  ],
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              flex: 8,
-                              child: Material(
-                                elevation: 20,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  //width: 240,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Expanded(
-                                        flex: 7,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(left: 17),
-                                          child: Text(
-                                            "$dateToDisplay",
-                                            style: TextStyle(fontSize: 20),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: IconButton(
-                                          onPressed: () {
-                                            showDatePicker(
-                                              context: context,
-                                              //locale: const Locale("it", "IT"),
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime.now().subtract(Duration(days: 0)),
-                                              lastDate: DateTime(DateTime.now().year + 5),
-                                            ).then((date) {
-                                              if (DateFormat("dd/MM/yyy").format(date!) == DateFormat("dd/MM/yyy").format(DateTime.now())) {
-                                                setState(() {
-                                                  isToday = true;
-                                                });
-                                              }
-                                              setState(() {
-                                                dateToDisplay = DateFormat("dd/MM/yyy").format(date);
-                                              });
+                                  Expanded(
+                                    flex: 2,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        showDatePicker(
+                                          context: context,
+                                          //locale: const Locale("it", "IT"),
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime.now().subtract(Duration(days: 0)),
+                                          lastDate: DateTime(DateTime.now().year + 5),
+                                        ).then((date) {
+                                          if (DateFormat("dd/MM/yyy").format(date!) == DateFormat("dd/MM/yyy").format(DateTime.now())) {
+                                            setState(() {
+                                              isToday = true;
                                             });
-                                          },
-                                          icon: Icon(Icons.event, color: Colors.deepOrangeAccent, size: 25),
-                                        ),
-                                      ),
-                                    ],
+                                          }
+                                          setState(() {
+                                            dateToDisplay = DateFormat("dd/MM/yyy").format(date);
+                                          });
+                                        });
+                                      },
+                                      icon: Icon(Icons.event, color: Colors.deepOrangeAccent, size: 25),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      SizedBox(height: 25),
-                      // ORARIO
-                      Row(
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.deepOrangeAccent,
-                                ),
-                                height: 35,
-                                width: 120,
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.access_time_filled, color: Colors.white),
-                                    SizedBox(width: 5),
-                                    Text(
-                                        "ORARIO",
-                                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                                    ),
-                                  ],
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                ),
-                              ),
+                      ],
+                    ),
+                    SizedBox(height: 25),
+                    // ORARIO
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.deepOrangeAccent,
                             ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              flex: 8,
-                              child: Material(
-                                elevation: 20,
-                                borderRadius: BorderRadius.circular(10),
-                                child: Container(
-                                  //width: 240,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Expanded(
-                                        flex: 7,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(left: 17),
-                                          child: Text(
-                                            "$timeToDisplay",
-                                            style: TextStyle(fontSize: 20),
-                                          ),
-                                        ),
+                            height: 35,
+                            width: 120,
+                            child: Row(
+                              children: [
+                                Icon(Icons.access_time_filled, color: Colors.white),
+                                SizedBox(width: 5),
+                                Text(
+                                    "ORARIO",
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          flex: 8,
+                          child: Material(
+                            elevation: 20,
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //width: 240,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    flex: 7,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 17),
+                                      child: Text(
+                                        "$timeToDisplay",
+                                        style: TextStyle(fontSize: 20),
                                       ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: IconButton(
-                                          onPressed: () {
-                                            showTimePicker(
-                                              context: context,
-                                              initialTime: initialTime,
-                                            ).then((time) {
-                                              if (time!.hour < DateTime.now().hour) {
-                                                setState(() {
-                                                  hourSelectedNow = true;
-                                                });
-                                              }
-                                              setState(() {
-                                                timeToDisplay = adjusteTime(time);
-                                              });
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        showTimePicker(
+                                          context: context,
+                                          initialTime: initialTime,
+                                        ).then((time) {
+                                          if (time!.hour < DateTime.now().hour) {
+                                            setState(() {
+                                              hourSelectedNow = true;
                                             });
-                                          },
-                                          icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
-                                        ),
-                                      ),
-                                      /*Padding(
+                                          }
+                                          setState(() {
+                                            timeToDisplay = adjusteTime(time);
+                                          });
+                                        });
+                                      },
+                                      icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
+                                    ),
+                                  ),
+                                  /*Padding(
                                         padding: EdgeInsets.fromLTRB(122, 0, 0, 0),
                                         child: IconButton(
                                           onPressed: () {
@@ -266,171 +279,554 @@ class _NewActivityState extends State<NewActivity> {
                                           icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
                                         ),
                                       ),*/
-                                    ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 25),
+                    // LUOGO
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.deepOrangeAccent,
+                      ),
+                      height: 35,
+                      child: Row(
+                        children: [
+                          Icon(Icons.map_outlined, color: Colors.white),
+                          SizedBox(width: 5),
+                          Text(
+                              "LUOGO",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                          ),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    ),
+                    SizedBox(height: 7),
+                    Material(
+                      elevation: 20,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Flex(
+                        direction: Axis.horizontal,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Container(
+                                    width: double.infinity,
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                      child: Text(
+                                        "$placeToDisplay",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      SizedBox(height: 25),
-                      // LUOGO
-                      Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.deepOrangeAccent,
-                          ),
-                          height: 35,
-                          child: Row(
-                            children: [
-                              Icon(Icons.map_outlined, color: Colors.white),
-                              SizedBox(width: 5),
-                              Text(
-                                  "LUOGO",
-                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                              ),
-                            ],
-                            mainAxisAlignment: MainAxisAlignment.center,
-                          ),
-                        ),
-                      SizedBox(height: 7),
-                      Material(
-                          elevation: 20,
-                          borderRadius: BorderRadius.circular(10),
-                          child: Flex(
-                            direction: Axis.horizontal,
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    Flexible(
-                                      child: Container(
-                                        width: double.infinity,
-                                        alignment: Alignment.centerLeft,
-                                        child: Padding(
-                                          padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
-                                          child: Text(
-                                            "$placeToDisplay",
-                                            style: TextStyle(fontSize: 20),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 50,
-                                      child: IconButton(
-                                        onPressed: () async {
-                                          final place = await showPlaceDialog();
-                                          setState(() => placeToDisplay = place!);
-                                        },
-                                        icon: Icon(Icons.edit, color: Colors.deepOrangeAccent, size: 25),
-                                      ),
-                                    ),
-                                  ],
+                                Container(
+                                  width: 50,
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      final place = await showPlaceDialog();
+                                      setState(() => placeToDisplay = place!);
+                                    },
+                                    icon: Icon(Icons.edit, color: Colors.deepOrangeAccent, size: 25),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      SizedBox(height: 25),
-                      // NOTE
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.deepOrangeAccent,
-                        ),
-                        height: 35,
-                        child: Row(
-                          children: [
-                            Icon(Icons.speaker_notes, color: Colors.white),
-                            SizedBox(width: 5),
-                            Text(
-                                "NOTE",
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                              ],
                             ),
-                          ],
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 7),
-                      Material(
+                    ),
+                    SizedBox(height: 25),
+                    // NOTE
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.deepOrangeAccent,
+                      ),
+                      height: 35,
+                      child: Row(
+                        children: [
+                          Icon(Icons.speaker_notes, color: Colors.white),
+                          SizedBox(width: 5),
+                          Text(
+                              "NOTE",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                          ),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    ),
+                    SizedBox(height: 7),
+                    Material(
                         elevation: 20,
                         borderRadius: BorderRadius.circular(10),
                         child: Flex(
-                          direction: Axis.horizontal,
-                        children:[ Expanded(
-                          child: Row(
-                            children: [
-                              Flexible(
-                                child: Container(
-                                  width: double.infinity,
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
-                                    child: Text(
-                                      "$notesToDisplay",
-                                      style: TextStyle(fontSize: 20),
+                            direction: Axis.horizontal,
+                            children:[ Expanded(
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                    child: Container(
+                                      width: double.infinity,
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                        child: Text(
+                                          "$notesToDisplay",
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  Container(
+                                    width: 50,
+                                    child: IconButton(
+                                      onPressed: () async {
+                                        final notes = await showNotesDialog();
+                                        setState(() => notesToDisplay = notes!);
+                                      },
+                                      icon: Icon(Icons.edit, color: Colors.deepOrangeAccent, size: 25),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Container(
-                                width: 50,
-                                child: IconButton(
-                                  onPressed: () async {
-                                    final notes = await showNotesDialog();
-                                    setState(() => notesToDisplay = notes!);
-                                  },
-                                  icon: Icon(Icons.edit, color: Colors.deepOrangeAccent, size: 25),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),])
-                      ),
-                      SizedBox(height: 35),
-                      // BOTTONE AGGIUNGI
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          onSurface: Colors.deepOrangeAccent,
-                          elevation: 10,
-                          padding: EdgeInsets.fromLTRB(50, 17, 50, 17),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
+                            ),])
+                    ),
+                    SizedBox(height: 35),
+                    // BOTTONE AGGIUNGI
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        onSurface: Colors.deepOrangeAccent,
+                        elevation: 10,
+                        padding: EdgeInsets.fromLTRB(50, 17, 50, 17),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Text(
-                          "Aggiungi",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        onPressed: () async {
-                          if(placeToDisplay.isEmpty || value!.isEmpty || dateToDisplay.isEmpty || timeToDisplay.isEmpty) {
-                            showErrorSnackBar(context, "Per favore inserire tutti i campi necessari ('Note' facoltativo).");
-                          } else if (isToday && hourSelectedNow) {
-                            setState(() {
-                              showErrorSnackBar(context, "Evento non programmato. Orario già passato.");
-                              dateToDisplay = "";
-                              timeToDisplay = "";
-                              isToday = false;
-                              hourSelectedNow = false;
-                            });
-                          } else {
-                            Activity activity = await service.addNewActivity(widget.teamID, value!, dateToDisplay, timeToDisplay, placeController, notesController);
-                            Navigator.of(context).pop(activity);
-                          }
-                        },
                       ),
-                    ],
-                  ),
+                      child: Text(
+                        "Aggiungi",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      onPressed: () async {
+                        if(placeToDisplay.isEmpty || value!.isEmpty || dateToDisplay.isEmpty || timeToDisplay.isEmpty) {
+                          showErrorSnackBar(context, "Per favore inserire tutti i campi necessari ('Note' facoltativo).");
+                        } else if (isToday && hourSelectedNow) {
+                          setState(() {
+                            showErrorSnackBar(context, "Evento non programmato. Orario già passato.");
+                            dateToDisplay = "";
+                            timeToDisplay = "";
+                            isToday = false;
+                            hourSelectedNow = false;
+                          });
+                        } else {
+                          Activity activity = await service.addNewActivity(widget.teamID, value!, dateToDisplay, timeToDisplay, placeController, notesController);
+                          Navigator.of(context).pop(activity);
+                        }
+                      },
+                    ),
+                  ],
                 ),
+              ),
             ),
           ],
         ),
       ),),
     );
+  }
+
+  Widget getModifyView() {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.grey.shade200,
+      appBar: AppBar(
+        title: Text("Modifica l'attività"),
+        centerTitle: true,
+      ),
+      body: Builder(builder: (context) => SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(20, 30, 20, 25),
+                child: Column(
+                  children: <Widget>[
+                    // TIPO
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.deepOrangeAccent,
+                            ),
+                            height: 35,
+                            width: 120,
+                            child: Row(
+                              children: [
+                                Icon(Icons.sports_basketball, color: Colors.white),
+                                SizedBox(width: 5),
+                                Text(
+                                    "TIPO",
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          flex: 8,
+                          child: Material(
+                            elevation: 20,
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: 240,
+                              padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: value,
+                                  iconSize: 30,
+                                  isExpanded: true,
+                                  icon: Icon(Icons.arrow_drop_down, color: Colors.deepOrangeAccent),
+                                  items: types.map(buildMenuType).toList(),
+                                  onChanged: (value) {setState(() => this.value = value);},
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 25),
+                    // DATA
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.deepOrangeAccent,
+                            ),
+                            height: 35,
+                            width: 120,
+                            child: Row(
+                              children: [
+                                Icon(Icons.event_note_sharp, color: Colors.white),
+                                SizedBox(width: 5),
+                                Text(
+                                    "DATA",
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          flex: 8,
+                          child: Material(
+                            elevation: 20,
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //width: 240,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    flex: 7,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 17),
+                                      child: Text(
+                                        "$dateToDisplay",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        showDatePicker(
+                                          context: context,
+                                          //locale: const Locale("it", "IT"),
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime.now().subtract(Duration(days: 0)),
+                                          lastDate: DateTime(DateTime.now().year + 5),
+                                        ).then((date) {
+                                          if (DateFormat("dd/MM/yyy").format(date!) == DateFormat("dd/MM/yyy").format(DateTime.now())) {
+                                            setState(() {
+                                              isToday = true;
+                                            });
+                                          }
+                                          setState(() {
+                                            dateToDisplay = DateFormat("dd/MM/yyy").format(date);
+                                          });
+                                        });
+                                      },
+                                      icon: Icon(Icons.event, color: Colors.deepOrangeAccent, size: 25),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 25),
+                    // ORARIO
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.deepOrangeAccent,
+                            ),
+                            height: 35,
+                            width: 120,
+                            child: Row(
+                              children: [
+                                Icon(Icons.access_time_filled, color: Colors.white),
+                                SizedBox(width: 5),
+                                Text(
+                                    "ORARIO",
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                ),
+                              ],
+                              mainAxisAlignment: MainAxisAlignment.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          flex: 8,
+                          child: Material(
+                            elevation: 20,
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //width: 240,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    flex: 7,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 17),
+                                      child: Text(
+                                        "$timeToDisplay",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        showTimePicker(
+                                          context: context,
+                                          initialTime: initialTime,
+                                        ).then((time) {
+                                          if (time!.hour < DateTime.now().hour) {
+                                            setState(() {
+                                              hourSelectedNow = true;
+                                            });
+                                          }
+                                          setState(() {
+                                            timeToDisplay = adjusteTime(time);
+                                          });
+                                        });
+                                      },
+                                      icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 25),
+                    // LUOGO
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.deepOrangeAccent,
+                      ),
+                      height: 35,
+                      child: Row(
+                        children: [
+                          Icon(Icons.map_outlined, color: Colors.white),
+                          SizedBox(width: 5),
+                          Text(
+                              "LUOGO",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                          ),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    ),
+                    SizedBox(height: 7),
+                    Material(
+                      elevation: 20,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Flex(
+                        direction: Axis.horizontal,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Container(
+                                    width: double.infinity,
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                      child: Text(
+                                        "$placeToDisplay",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 50,
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      final place = await showPlaceDialog();
+                                      setState(() => placeToDisplay = place!);
+                                    },
+                                    icon: Icon(Icons.edit, color: Colors.deepOrangeAccent, size: 25),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 25),
+                    // NOTE
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.deepOrangeAccent,
+                      ),
+                      height: 35,
+                      child: Row(
+                        children: [
+                          Icon(Icons.speaker_notes, color: Colors.white),
+                          SizedBox(width: 5),
+                          Text(
+                              "NOTE",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                          ),
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    ),
+                    SizedBox(height: 7),
+                    Material(
+                        elevation: 20,
+                        borderRadius: BorderRadius.circular(10),
+                        child: Flex(
+                            direction: Axis.horizontal,
+                            children:[ Expanded(
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                    child: Container(
+                                      width: double.infinity,
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.fromLTRB(15, 10, 0, 10),
+                                        child: Text(
+                                          "$notesToDisplay",
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 50,
+                                    child: IconButton(
+                                      onPressed: () async {
+                                        final notes = await showNotesDialog();
+                                        setState(() => notesToDisplay = notes!);
+                                      },
+                                      icon: Icon(Icons.edit, color: Colors.deepOrangeAccent, size: 25),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),])
+                    ),
+                    SizedBox(height: 35),
+                    // BOTTONE SALVA
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        onSurface: Colors.deepOrangeAccent,
+                        elevation: 10,
+                        padding: EdgeInsets.fromLTRB(50, 17, 50, 17),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: Text(
+                        "Salva",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      onPressed: () async {
+                        if(placeToDisplay.isEmpty || value!.isEmpty || dateToDisplay.isEmpty || timeToDisplay.isEmpty) {
+                          showErrorSnackBar(context, "Per favore inserire tutti i campi necessari ('Note' facoltativo).");
+                        } else if (isToday && hourSelectedNow) {
+                          setState(() {
+                            showErrorSnackBar(context, "Evento non programmato. Orario già passato.");
+                            dateToDisplay = "";
+                            timeToDisplay = "";
+                            isToday = false;
+                            hourSelectedNow = false;
+                          });
+                        } else {
+                          await service.updateModifiedActivity(widget.activity, value!, dateToDisplay, timeToDisplay, placeToDisplay, notesToDisplay);
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage(widget.teamID, "trainer")));
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (widget.mode == "create") ? getCreateView() : getModifyView();
   }
 
   void showErrorSnackBar(BuildContext context, String message) {

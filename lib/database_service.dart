@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:whatshoop/models/survey.dart';
 import 'package:whatshoop/models/activity.dart';
-import 'package:whatshoop/models/user.dart' as Player;
+import 'package:whatshoop/models/user.dart';
 import 'package:whatshoop/models/fine.dart';
 import 'package:whatshoop/models/team.dart';
 
@@ -17,6 +17,13 @@ class DatabaseService {
   }
 
   Future removeActivity(String activityID) async {
+    Activity activity = await getActivityFromActivityID(activityID);
+    List<Survey> surveys = await getSurveysByTeamID(activity.teamID);
+    for (var survey in surveys) {
+      if (survey.title == "${activity.type} ${activity.date}") {
+        await removeSurvey(survey.id);
+      }
+    }
     await firestoreInstance.collection("activities").doc(activityID).delete();
   }
 
@@ -38,6 +45,11 @@ class DatabaseService {
     return teamsTrainer;
   }
 
+  Future<Activity> getActivityFromActivityID(String activityID) async {
+    var data = (await firestoreInstance.collection("activities").doc(activityID).get()).data();
+    return Activity(id: activityID, type: data!["type"], date: data["date"], time: data["time"], place: data["place"], notes: data["notes"], teamID: data["teamID"]);
+  }
+
   Future<Team> addNewTeam(TextEditingController nameController) async {
     String name = nameController.text;
     String trainerID = _authUser!.uid.toString();
@@ -51,8 +63,8 @@ class DatabaseService {
     return team;
   }
 
-  Future<List<Player.UserModel>> getPlayersFromTeamID(String teamID) async {
-    List<Player.UserModel> players = [];
+  Future<List<UserModel>> getPlayersFromTeamID(String teamID) async {
+    List<UserModel> players = [];
     var playersData = await firestoreInstance.collection("users").where("teamID", isEqualTo: teamID).get();
     for (var value in playersData.docs) {
       Map<String, dynamic> data = value.data();
@@ -62,7 +74,7 @@ class DatabaseService {
       String lastName = data["lastName"];
       int type = data["type"];
       String teamID = data["teamID"];
-      players.add(Player.UserModel(id: id, email: email, firstName: firstName, lastName: lastName, type: type, teamID: teamID));
+      players.add(UserModel(id: id, email: email, firstName: firstName, lastName: lastName, type: type, teamID: teamID));
     }
     return players;
   }
@@ -112,6 +124,14 @@ class DatabaseService {
     var document = firestoreInstance.collection("activities").doc("${ref.id}");
     document.update({"id":"${ref.id}"});
     Activity activity = Activity(id: ref.id, type: value, date: date, time: time, place: placeController.text, notes: notesController.text, teamID: teamID);
+    String question = "";
+    if (value == "Allenamento") {
+      question = "Parteciperai all'allenamento";
+    } else {
+      question = "Parteciperai alla partita";
+    }
+    List<String> options = ["Si", "No", "Forse - non lo so ancora"];
+    await addNewSurvey(teamID, "$value $date", "$question del giorno $date?", options);
     return activity;
   }
 
@@ -189,15 +209,15 @@ class DatabaseService {
     }
   }
 
-  Future<Player.UserModel> getUserFromID(String id) async {
+  Future<UserModel> getUserFromID(String id) async {
     var data = (await firestoreInstance.collection("users").doc(id).get()).data();
-    return Player.UserModel(id: data!["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
+    return UserModel(id: data!["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
   }
 
-  Future<Player.UserModel> getUserFromEmail(String email) async {
+  Future<UserModel> getUserFromEmail(String email) async {
     var user = (await firestoreInstance.collection("users").where("email", isEqualTo: email).get()).docs;
     var data = user[0].data();
-    return Player.UserModel(id: data["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
+    return UserModel(id: data["id"], email: data["email"], firstName: data["firstName"], lastName: data["lastName"], type: data["type"], teamID: data["teamID"]);
   }
 
   Future<Team> getTeamFromID(String id) async {
@@ -302,6 +322,16 @@ class DatabaseService {
     await firestoreInstance.collection("users").doc(userID).update({"teamID": ""});
     Team teamToUpdate = await getTeamFromID(teamID);
     await firestoreInstance.collection("teams").doc(teamID).update({"numPartecipants": teamToUpdate.numPartecipants - 1});
+  }
+
+  Future updateModifiedActivity(Activity activity, String value, String date, String time, String place, String notes) async {
+    await firestoreInstance.collection("activities").doc(activity.id).update({
+      "type": value,
+      "date": date,
+      "time": time,
+      "place": place,
+      "notes": notes,
+    });
   }
 
 }

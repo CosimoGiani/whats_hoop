@@ -37,7 +37,7 @@ class _ProfileState extends State<Profile> {
         if (snapshot.connectionState != ConnectionState.done) {
           return Scaffold(
             appBar: AppBar(
-              title: Text("Profilo"),
+              title: Text(""),
               centerTitle: true,
               automaticallyImplyLeading: false,
             ),
@@ -47,7 +47,7 @@ class _ProfileState extends State<Profile> {
         return Scaffold(
           backgroundColor: Colors.grey.shade200,
           appBar: AppBar(
-            title: Text("Profilo"),
+            title: Text(""),
             centerTitle: true,
             automaticallyImplyLeading: false,
           ),
@@ -225,7 +225,7 @@ class _ProfileState extends State<Profile> {
         if (snapshot.connectionState != ConnectionState.done) {
           return Scaffold(
             appBar: AppBar(
-              title: Text("Profilo"),
+              title: Text(""),
               centerTitle: true,
               automaticallyImplyLeading: false,
             ),
@@ -235,7 +235,7 @@ class _ProfileState extends State<Profile> {
         return Scaffold(
           backgroundColor: Colors.grey.shade200,
           appBar: AppBar(
-            title: Text("Profilo"),
+            title: Text(""),
             centerTitle: true,
             automaticallyImplyLeading: false,
           ),
@@ -411,9 +411,13 @@ class _ProfileState extends State<Profile> {
                     Expanded(
                       flex: 3,
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.orange,
+                          elevation: 7
+                        ),
                         child: Text("DETTAGLI", style: TextStyle(fontSize: 17)),
                         onPressed: () {
-                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => FinesAthletePage()));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => FinesAthletePage()));
                         },
                       ),
                     ),

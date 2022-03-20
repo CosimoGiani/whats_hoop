@@ -1,4 +1,4 @@
-import 'package:whatshoop/models/user.dart' as Player;
+import 'package:whatshoop/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:whatshoop/models/team.dart';
 import 'package:whatshoop/database_service.dart';
@@ -19,16 +19,15 @@ class _TeamManagementState extends State<TeamManagement> {
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = new TextEditingController();
-  //List<Team?> teams = [];
-  late Player.UserModel trainer;
+  late UserModel trainer;
   final DatabaseService service = new DatabaseService();
   late TextField newInvite;
   bool initialization = false;
-  List<Player.UserModel> players = [];
+  List<UserModel> athletes = [];
 
   Future _loadData(String teamID) async {
-    List<Player.UserModel> playersToLoad = await service.getPlayersFromTeamID(teamID);
-    players = playersToLoad;
+    List<UserModel> athletesToLoad = await service.getPlayersFromTeamID(teamID);
+    athletes = athletesToLoad;
     initialization = true;
     Team team = await service.getTeamFromID(teamID);
     trainer = await service.getUserFromID(team.trainerID);
@@ -167,13 +166,13 @@ class _TeamManagementState extends State<TeamManagement> {
                   ),
                   // LISTA GIOCATORI
                   Container(
-                    child: players.isEmpty
+                    child: athletes.isEmpty
                         ? SizedBox(height: 300, child: Center(child: Text("Nessun giocatore invitato", style: TextStyle(fontSize: 18))))
                         : ListView.separated(
                         shrinkWrap: true,
                         padding: EdgeInsets.fromLTRB(15, 5, 15, 20),
-                        itemCount: players.length,
-                        itemBuilder: (_, i) => createCard(players, i),
+                        itemCount: athletes.length,
+                        itemBuilder: (_, i) => createCard(athletes, i),
                         separatorBuilder: (context, index) => SizedBox(height: 20)
                     ),
                   ),
@@ -260,13 +259,13 @@ class _TeamManagementState extends State<TeamManagement> {
                   ),
                   // LISTA GIOCATORI
                   Container(
-                    child: players.isEmpty
+                    child: athletes.isEmpty
                         ? SizedBox(height: 300, child: Center(child: Text("Nessun giocatore invitato", style: TextStyle(fontSize: 18))))
                         : ListView.separated(
                         shrinkWrap: true,
                         padding: EdgeInsets.fromLTRB(15, 5, 15, 20),
-                        itemCount: players.length,
-                        itemBuilder: (_, i) => createCardAthlete(players, i),
+                        itemCount: athletes.length,
+                        itemBuilder: (_, i) => createCardAthlete(athletes, i),
                         separatorBuilder: (context, index) => SizedBox(height: 20)
                     ),
                   ),
@@ -286,7 +285,7 @@ class _TeamManagementState extends State<TeamManagement> {
   Future invitePlayer(String email, String teamID) async {
     if (_formKey.currentState!.validate()) {
       try {
-        Player.UserModel player = await service.getUserFromEmail(email);
+        UserModel player = await service.getUserFromEmail(email);
         await service.sendInvite(teamID, player.id);
       } on RangeError catch (e) {
         print(e);
@@ -321,7 +320,7 @@ class _TeamManagementState extends State<TeamManagement> {
     Scaffold.of(context)..hideCurrentSnackBar()..showSnackBar(snackBar);
   }
 
-  createCard(List<Player.UserModel> players, int i) => Card(
+  createCard(List<UserModel> athletes, int i) => Card(
     shadowColor: Colors.grey,
     elevation: 10,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -333,7 +332,7 @@ class _TeamManagementState extends State<TeamManagement> {
           // NOME GIOCATORE
           Expanded(
             flex: 8,
-            child: Text("${players[i].firstName} ${players[i].lastName}", style: TextStyle(fontSize: 20)),
+            child: Text("${athletes[i].firstName} ${athletes[i].lastName}", style: TextStyle(fontSize: 20)),
           ),
           // ICONA MULTE
           Expanded(
@@ -347,7 +346,7 @@ class _TeamManagementState extends State<TeamManagement> {
                 ),
                 IconButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Fines(players[i].id)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Fines(athletes[i].id)));
                   },
                   icon: Icon(Icons.attach_money_sharp),
                   color: Colors.deepOrangeAccent,
@@ -368,7 +367,7 @@ class _TeamManagementState extends State<TeamManagement> {
                 ),
                 IconButton(
                   onPressed: () {
-                    showRemoveDialog(players[i].id);
+                    showRemoveDialog(athletes[i].id);
                   },
                   icon: Icon(Icons.person_remove),
                   color: Colors.deepOrangeAccent,
@@ -382,7 +381,7 @@ class _TeamManagementState extends State<TeamManagement> {
     ),
   );
 
-  createCardAthlete(List<Player.UserModel> players, int i) => Card(
+  createCardAthlete(List<UserModel> athletes, int i) => Card(
     shadowColor: Colors.grey,
     elevation: 10,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -394,7 +393,7 @@ class _TeamManagementState extends State<TeamManagement> {
           // NOME GIOCATORE
           Expanded(
             flex: 8,
-            child: Text("${players[i].firstName} ${players[i].lastName}", style: TextStyle(fontSize: 20)),
+            child: Text("${athletes[i].firstName} ${athletes[i].lastName}", style: TextStyle(fontSize: 20)),
           ),
         ],
       ),

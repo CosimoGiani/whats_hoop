@@ -18,9 +18,11 @@ class Surveys extends StatefulWidget {
 class _SurveysState extends State<Surveys> {
 
   bool isVisible = false;
-  bool modify = true;
+  bool remove = true;
   List<Survey> activeSurveys = [];
   final DatabaseService service = new DatabaseService();
+  static const itemRemove = MenuItem(text: "Elimina", icon: Icons.delete);
+  static const List<MenuItem> items = [itemRemove];
 
   Future _loadData(String teamID) async {
     List<Survey> surveys = await service.getSurveysByTeamID(teamID);
@@ -47,10 +49,17 @@ class _SurveysState extends State<Surveys> {
             centerTitle: false,
             automaticallyImplyLeading: false,
             actions: <Widget>[
-              FlatButton(
+              remove
+              ? PopupMenuButton<MenuItem>(
+                onSelected: (item) => onSelected(context, item),
+                  itemBuilder: (context) => [
+                    ...items.map(buildItem).toList(),
+                  ],
+              )
+              : FlatButton(
                 textColor: Colors.white,
-                onPressed: () => setState(() => (isVisible = !isVisible) & (modify = !modify)),
-                child: modify ? Text("RIMUOVI") : Text("FATTO"),
+                onPressed: () => setState(() => (isVisible = !isVisible) & (remove = !remove)),
+                child: remove ? Text("RIMUOVI") : Text("FATTO"),
                 shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
               ),
             ],
@@ -114,6 +123,25 @@ class _SurveysState extends State<Surveys> {
     return (widget.mode == "trainer") ? getTrainerView() : getAthleteView();
   }
 
+  PopupMenuItem<MenuItem> buildItem(MenuItem item) => PopupMenuItem<MenuItem>(
+    value: item,
+    child: Row(
+      children: [
+        Icon(item.icon, color: Colors.black, size: 20),
+        const SizedBox(width: 12),
+        Text(item.text)
+      ],
+    ),
+  );
+
+  void onSelected(BuildContext context, MenuItem item) {
+    switch (item) {
+      case itemRemove:
+        setState(() => (isVisible = !isVisible) & (remove = !remove));
+        break;
+    }
+  }
+
   createCard(List<Survey> surveys, int i) => Card(
     shadowColor: Colors.grey,
     elevation: 10,
@@ -167,3 +195,9 @@ class _SurveysState extends State<Surveys> {
 
 }
 
+class MenuItem {
+  final String text;
+  final IconData icon;
+
+  const MenuItem({required this.text, required this.icon});
+}
