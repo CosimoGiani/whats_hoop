@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:whatshoop/models/user.dart';
 import 'package:whatshoop/screens/athlete_home.dart';
 import 'package:whatshoop/screens/main_page.dart';
@@ -13,8 +12,6 @@ class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
-
-// TODO aggiungere messaggi di validazione login
 
 class _LoginScreenState extends State<LoginScreen> {
 
@@ -107,139 +104,123 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
           child: Container(
             color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(36.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      "WHATS HOOP",
-                      style: TextStyle(
-                        fontSize: 45,
-                        color: Colors.deepOrange,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Container(
+                      child: Image.asset("assets/logo.png"),
                     ),
-                    SizedBox(
-                      height: 200,
-                      child: Image.asset(
-                          "assets/logo.png",
-                          fit: BoxFit.contain
-                      ),
-                    ),
-                    Text(
-                      "Per rendere più semplice la tua vita cestistica",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.deepOrangeAccent,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    emailField,
-                    SizedBox(height: 10),
-                    passwordField,
-                    SizedBox(height: 30),
-                    loginButton,
-                    SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "Non hai ancora un account? ",
-                          style: TextStyle(
-                            fontSize: 15,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 36),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Per rendere più semplice la tua vita cestistica",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.deepOrangeAccent,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationScreen()));
-                          },
-                          child: Text(
-                              "Registrati",
-                              style: TextStyle(
-                                color: Colors.deepOrange,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
+                          SizedBox(height: 30),
+                          emailField,
+                          SizedBox(height: 10),
+                          passwordField,
+                          SizedBox(height: 30),
+                          loginButton,
+                          SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "Non hai ancora un account? ",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                ),
                               ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegistrationScreen()));
+                                },
+                                child: Text(
+                                  "Registrati",
+                                  style: TextStyle(
+                                    color: Colors.deepOrange,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
-            ),
           ),
         ),
-      ),
     );
   }
 
   Future login(String email, String password) async {
     if (_formKey.currentState!.validate()) {
-      await _authentication.signInWithEmailAndPassword(email: email, password: password)
-          .then((id) async {
-        UserModel userModel = await service.getUserFromID(_authentication.currentUser!.uid);
-        if (userModel.type == 1) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => TrainerHome()));
-        } else if (userModel.teamID!.trim().isNotEmpty) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainPage(userModel.teamID!, "athlete")));
-        } else {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AthleteHome()));
-        }
-      });
-    }
-  }
-      /*try {
+      try {
         await _authentication.signInWithEmailAndPassword(email: email, password: password)
             .then((id) async {
           UserModel userModel = await service.getUserFromID(_authentication.currentUser!.uid);
           if (userModel.type == 1) {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => TrainerHome()));
           } else if (userModel.teamID!.trim().isNotEmpty) {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainPage(userModel.teamID!)));
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => MainPage(userModel.teamID!, "athlete")));
           } else {
             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AthleteHome()));
           }
         });
       } on FirebaseAuthException catch (error) {
         switch (error.code) {
-          case "ERROR_EMAIL_ALREADY_IN_USE":
-          case "account-exists-with-different-credential":
-          case "email-already-in-use":
-            return "Email already used. Go to login page.";
           case "ERROR_WRONG_PASSWORD":
           case "wrong-password":
-            return "Wrong email/password combination.";
+            return showErrorSnackBar(context, "Password errata. Per favore riprovare.");
           case "ERROR_USER_NOT_FOUND":
           case "user-not-found":
-            //return "No user found with this email.";
-            print(error);
-            //break;
-            //_showToast("Nessun utente trovato con questa email.");
-            break;
-          case "ERROR_INVALID_EMAIL":
-          case "invalid-email":
-            return "Email address is invalid.";
+            return showErrorSnackBar(context, "Nessun utente trovato con questa e-mail");
           default:
-            return "Login failed. Please try again.";
+            return showErrorSnackBar(context, "Login fallito. Per favore riprovare.");
         }
       }
     }
   }
 
-  void _showToast(String message) => Fluttertoast.showToast(
-      msg: message,
-      fontSize: 18
-  );*/
+  void showErrorSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Icon(Icons.error_outline_outlined, color: Colors.white),
+          SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.grey.shade800,
+      duration: Duration(seconds: 4),
+      behavior: SnackBarBehavior.fixed,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
 }
+
 

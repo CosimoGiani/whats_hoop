@@ -81,63 +81,110 @@ class _SurveyPageState extends State<SurveyPage> {
               child: Column(
                 children: [
                   // TITOLO
-                  Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(top: 25),
-                    child: Text(
-                        widget.survey.title,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 25),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepOrangeAccent.withOpacity(0.8),
+                            spreadRadius: 0.5,
+                            blurRadius: 3,
+                            offset: Offset(1, 12),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                          widget.survey.title,
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                      ),
                     ),
                   ),
-                  // DOMANDA
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Text(
-                      widget.survey.question,
-                      style: TextStyle(fontSize: 20),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Material(
+                      borderRadius: BorderRadius.circular(10),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          // DOMANDA
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                            child: Text(
+                              widget.survey.question,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                          // OPZIONI
+                          ListView.separated(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.all(10),
+                            itemBuilder: (_, i) => createCheckboxList(widget.survey.options, i),
+                            separatorBuilder: (context, index) => SizedBox(height: 1),
+                            itemCount: widget.survey.options.length,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  // OPZIONI
-                  ListView.separated(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.all(10),
-                    itemBuilder: (_, i) => createCheckboxList(widget.survey.options, i),
-                    separatorBuilder: (context, index) => SizedBox(height: 1),
-                    itemCount: widget.survey.options.length,
                   ),
                   SizedBox(height: 15),
                   // GRAFICO
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Risultati",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 25),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepOrangeAccent.withOpacity(0.8),
+                            spreadRadius: 0.5,
+                            blurRadius: 3,
+                            offset: Offset(1, 12),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        "Risultati",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
                     ),
                   ),
-                  Container(
-                    height: 350,
-                    child: widget.survey.numVotes == 0
-                      ? Center(child: Text("Nessun giocatore ha ancora votato", style: TextStyle(fontSize: 20)))
-                      : SfCircularChart(
-                      legend: Legend(
-                        isVisible: true,
-                        position: LegendPosition.bottom,
-                        textStyle: TextStyle(fontSize: 15),
-                        overflowMode: LegendItemOverflowMode.wrap,
-                        iconWidth: 25,
-                        iconHeight: 25,
-                        itemPadding: 15,
-                      ),
-                      series: <CircularSeries>[
-                        PieSeries<ChartData, String>(
-                          dataSource: chartData,
-                          xValueMapper: (ChartData data, _) => data.answer,
-                          yValueMapper: (ChartData data, _) => data.vote,
-                          //explode: true,
-                          dataLabelSettings: DataLabelSettings(isVisible: true, textStyle: TextStyle(fontSize: 20)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Material(
+                      elevation: 5,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        height: 350,
+                        child: widget.survey.numVotes == 0
+                            ? Center(child: Text("Nessun giocatore ha ancora votato", style: TextStyle(fontSize: 20)))
+                            : SfCircularChart(
+                          legend: Legend(
+                            isVisible: true,
+                            position: LegendPosition.bottom,
+                            textStyle: TextStyle(fontSize: 15),
+                            overflowMode: LegendItemOverflowMode.wrap,
+                            iconWidth: 25,
+                            iconHeight: 25,
+                            itemPadding: 15,
+                          ),
+                          series: <CircularSeries>[
+                            PieSeries<ChartData, String>(
+                              dataSource: chartData,
+                              xValueMapper: (ChartData data, _) => data.answer,
+                              yValueMapper: (ChartData data, _) => data.vote,
+                              //explode: true,
+                              dataLabelSettings: DataLabelSettings(isVisible: true, textStyle: TextStyle(fontSize: 20)),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 25)
@@ -171,58 +218,107 @@ class _SurveyPageState extends State<SurveyPage> {
               child: Column(
                 children: [
                   // TITOLO
-                  Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(top: 25),
-                    child: Text(
-                        widget.survey.title,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 25),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepOrangeAccent.withOpacity(0.8),
+                            spreadRadius: 0.5,
+                            blurRadius: 3,
+                            offset: Offset(1, 12),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                          widget.survey.title,
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                      ),
                     ),
                   ),
                   // DOMANDA
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Text(
-                      widget.survey.question,
-                      style: TextStyle(fontSize: 20),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Material(
+                      borderRadius: BorderRadius.circular(10),
+                      elevation: 5,
+                      child: Column(
+                        children: [
+                          // DOMANDA
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                            child: Text(
+                              widget.survey.question,
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ),
+                          // OPZIONI
+                          ...optionsToDisplay.map(buildSingleCheckbox).toList(),
+                          SizedBox(height: 10),
+                        ],
+                      ),
                     ),
                   ),
-                  // OPZIONI
-                  ...optionsToDisplay.map(buildSingleCheckbox).toList(),
                   SizedBox(height: 15),
                   // GRAFICO
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Risultati",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Container(
-                    height: 350,
-                    child: SfCircularChart(
-                      legend: Legend(
-                        isVisible: true,
-                        position: LegendPosition.bottom,
-                        textStyle: TextStyle(fontSize: 15),
-                        overflowMode: LegendItemOverflowMode.wrap,
-                        iconWidth: 25,
-                        iconHeight: 25,
-                        itemPadding: 15,
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 25),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepOrangeAccent.withOpacity(0.8),
+                            spreadRadius: 0.5,
+                            blurRadius: 3,
+                            offset: Offset(1, 12),
+                          ),
+                        ],
                       ),
-                      series: <CircularSeries>[
-                        PieSeries<ChartData, String>(
-                          dataSource: chartData,
-                          xValueMapper: (ChartData data, _) => data.answer,
-                          yValueMapper: (ChartData data, _) => data.vote,
-                          //explode: true,
-                          dataLabelSettings: DataLabelSettings(isVisible: true, textStyle: TextStyle(fontSize: 20)),
-                        ),
-                      ],
+                      child: Text(
+                        "Risultati",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
                     ),
                   ),
-                  SizedBox(height: 25)
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Material(
+                      elevation: 5,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        height: 350,
+                        child: SfCircularChart(
+                          legend: Legend(
+                            isVisible: true,
+                            position: LegendPosition.bottom,
+                            textStyle: TextStyle(fontSize: 15),
+                            overflowMode: LegendItemOverflowMode.wrap,
+                            iconWidth: 25,
+                            iconHeight: 25,
+                            itemPadding: 15,
+                          ),
+                          series: <CircularSeries>[
+                            PieSeries<ChartData, String>(
+                              dataSource: chartData,
+                              xValueMapper: (ChartData data, _) => data.answer,
+                              yValueMapper: (ChartData data, _) => data.vote,
+                              //explode: true,
+                              dataLabelSettings: DataLabelSettings(isVisible: true, textStyle: TextStyle(fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
                 ],
               ),
             ),
@@ -257,24 +353,7 @@ class _SurveyPageState extends State<SurveyPage> {
     controlAffinity: ListTileControlAffinity.leading,
     title: Text(checkbox.title, style: TextStyle(fontSize: 20)),
     onChanged: (value) async {
-      /*setState(() {
-        if (checkbox.value) {
-          for (var element in optionsToDisplay) {
-            element.value = value!;
-            checkbox.value = value;
-          }
-        } else {
-          for (var element in optionsToDisplay) {
-            if (element.title != checkbox.title) {
-              element.value = !value!;
-            } else {
-              checkbox.value = value!;
-            }
-          }
-        }
-      });*/
       await _updateVotes(checkbox, value!);
-      //await service.userVote(widget.survey, authUser!.uid, checkbox.title, checkbox.value);
     },
   );
 

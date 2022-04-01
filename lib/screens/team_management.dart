@@ -63,18 +63,31 @@ class _TeamManagementState extends State<TeamManagement> {
                 children: [
                   // AGGIUNGI ATLETA
                   SizedBox(height: 20),
-                  Container(
-                    color: Colors.orange.shade500,
-                    alignment: Alignment.center,
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                          child: Text("AGGIUNGI ATLETA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepOrangeAccent.withOpacity(0.8),
+                            spreadRadius: 0.5,
+                            blurRadius: 3,
+                            offset: Offset(1, 1),
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: Text("AGGIUNGI ATLETA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   // INVITO
@@ -116,18 +129,13 @@ class _TeamManagementState extends State<TeamManagement> {
                                     ),
                                   ),
                                 ),
-                                // BOTTONO ADD PLAYER
+                                // BOTTONE ADD PLAYER
                                 Expanded(
                                   flex: 2,
                                   child: Container(
                                     padding: EdgeInsets.only(top: 5, left: 5),
                                     child: Stack(
                                       children: [
-                                        Positioned(
-                                          left: 10,
-                                          top: 9.5,
-                                          child: Icon(Icons.person_add, color: Colors.black.withAlpha(150), size: 32),
-                                        ),
                                         IconButton(
                                           onPressed: () async {
                                             await invitePlayer(emailController.text, widget.teamID);
@@ -150,18 +158,31 @@ class _TeamManagementState extends State<TeamManagement> {
                     ),
                   ),
                   // LA TUA SQUADRA
-                  Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    color: Colors.orange.shade500,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                          child: Text("LA TUA SQUADRA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepOrangeAccent.withOpacity(0.8),
+                            spreadRadius: 0.5,
+                            blurRadius: 3,
+                            offset: Offset(1, 1),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: Text("LA TUA SQUADRA", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   // LISTA GIOCATORI
@@ -208,18 +229,31 @@ class _TeamManagementState extends State<TeamManagement> {
               child: Column(
                 children: [
                   SizedBox(height: 20),
-                  Container(
-                    color: Colors.orange.shade500,
-                    alignment: Alignment.center,
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                          child: Text("Allenatore", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepOrangeAccent.withOpacity(0.8),
+                            spreadRadius: 0.5,
+                            blurRadius: 2,
+                            offset: Offset(1, 1),
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: Text("ALLENATORE", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   // ALLENATORE
@@ -243,18 +277,31 @@ class _TeamManagementState extends State<TeamManagement> {
                     ),
                   ),
                   // ATLETI
-                  Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    color: Colors.orange.shade500,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                          child: Text("Atleti", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepOrangeAccent.withOpacity(0.8),
+                            spreadRadius: 0.5,
+                            blurRadius: 2,
+                            offset: Offset(1, 1),
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                            child: Text("ATLETI", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   // LISTA GIOCATORI
@@ -339,11 +386,6 @@ class _TeamManagementState extends State<TeamManagement> {
             flex: 2,
             child: Stack(
               children: [
-                Positioned(
-                  left: 10,
-                  top: 9.5,
-                  child: Icon(Icons.attach_money_sharp, color: Colors.black.withAlpha(150), size: 35),
-                ),
                 IconButton(
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => Fines(athletes[i].id)));
@@ -360,11 +402,6 @@ class _TeamManagementState extends State<TeamManagement> {
             flex: 2,
             child: Stack(
               children: [
-                Positioned(
-                  left: 10,
-                  top: 9.5,
-                  child: Icon(Icons.person_remove, color: Colors.black.withAlpha(150), size: 32),
-                ),
                 IconButton(
                   onPressed: () {
                     showRemoveDialog(athletes[i].id);
@@ -414,62 +451,54 @@ class _TeamManagementState extends State<TeamManagement> {
             children: [
               SizedBox(height: 15),
               Text(
-                "Rimuovi giocatore",
+                "Rimuovere giocatore?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 20,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-              SizedBox(height: 15),
-              Text(
-                "Sicuro di voler rimuovere questo giocatore?",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 18
                 ),
               ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Material(
-                    elevation: 7,
-                    borderRadius: BorderRadius.circular(30),
-                    color: Colors.deepOrangeAccent,
-                    child: MaterialButton(
-                      minWidth: MediaQuery.of(context).size.width * 0.2,
-                      onPressed: () async {
+                  Padding(
+                    padding: EdgeInsets.only(right: 40),
+                    child: GestureDetector(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(25)),
+                          color: Colors.green,
+                        ),
+                        width: MediaQuery.of(context).size.width/6,
+                        child: Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Center(
+                            child: Icon(Icons.done_outline, color: Colors.white, size: 30),
+                          ),
+                        ),
+                      ),
+                      onTap: () async {
                         await removePlayer(userID, widget.teamID);
                       },
-                      child: Text(
-                        "Sì",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white
-                        ),
-                      ),
                     ),
                   ),
-                  SizedBox(width: 40),
-                  Material(
-                    elevation: 7,
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.deepOrangeAccent,
-                    child: MaterialButton(
-                      //padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      minWidth: MediaQuery.of(context).size.width * 0.2,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(
-                        "No",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white
+                  GestureDetector(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        color: Colors.red,
+                      ),
+                      width: MediaQuery.of(context).size.width/6,
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Center(
+                          child: Icon(Icons.highlight_remove, color: Colors.white, size: 30),
                         ),
                       ),
                     ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ],
               ),

@@ -46,12 +46,23 @@ class _FinesAthletePageState extends State<FinesAthletePage> {
             children: [
               Container(
                 padding: EdgeInsets.only(top: 15),
-                height: 50,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Debito totale: ", style: TextStyle(fontSize: 20)),
-                    Text(sumFines(finesToDisplay) + " €", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    Material(
+                      elevation: 3,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(sumFines(finesToDisplay) + " €", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

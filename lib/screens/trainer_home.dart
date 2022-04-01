@@ -169,13 +169,6 @@ class _TrainerHomeState extends State<TrainerHome> {
                       fontWeight: FontWeight.bold
                   ),
                 ),
-                SizedBox(height: 15),
-                Text(
-                  "Inserisci il nome della tua squadra",
-                  style: TextStyle(
-                      fontSize: 18
-                  ),
-                ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(15, 7, 15, 10),
                   child: TextFormField(
@@ -191,7 +184,7 @@ class _TrainerHomeState extends State<TrainerHome> {
                     },
                     textInputAction: TextInputAction.done,
                     decoration: InputDecoration(
-                      hintText: "Nome squadra",
+                      hintText: "Inserire nome squadra",
                     ),
                   ),
                 ),

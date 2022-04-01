@@ -12,8 +12,6 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
 
-  // TODO fortificare i controlli sugli input
-
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController firstNameController = new TextEditingController();
@@ -195,7 +193,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           child: Container(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.all(36.0),
+              padding: const EdgeInsets.symmetric(horizontal: 36.0),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -205,9 +203,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     Text(
                       "REGISTRATI",
                       style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 35,
                           color: Colors.deepOrange,
                           fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "È semplice!",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.orange,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(height: 40),
@@ -220,35 +227,45 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     passwordField,
                     SizedBox(height: 10),
                     confirmPasswordField,
-                    //SizedBox(height: 1),
                     Row(
                       children: [
-                        Transform.scale(
-                          scale: 1.3,
-                          child: Radio(
-                            value: 1,
-                            groupValue: selectedValue,
-                            onChanged: (value) => setState(() => selectedValue = 1) ,
+                        Expanded(
+                          flex: 4,
+                          child: Row(
+                            children: [
+                              Transform.scale(
+                                  scale: 1.3,
+                                  child: Radio(
+                                    value: 1,
+                                    groupValue: selectedValue,
+                                    onChanged: (value) => setState(() => selectedValue = 1) ,
+                                  ),
+                                ),
+                              Text(
+                                  "Allenatore",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                            ],
                           ),
                         ),
-                        //SizedBox(width: 5),
-                        Text(
-                          "Allenatore",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        SizedBox(width: 95),
-                        Transform.scale(
-                          scale: 1.3,
-                          child: Radio(
-                            value: 2,
-                            groupValue: selectedValue,
-                            onChanged: (value) => setState(() => selectedValue = 2),
+                        Expanded(
+                          flex: 2,
+                          child: Row(
+                            children: [
+                              Transform.scale(
+                                  scale: 1.3,
+                                  child: Radio(
+                                    value: 2,
+                                    groupValue: selectedValue,
+                                    onChanged: (value) => setState(() => selectedValue = 2),
+                                  ),
+                                ),
+                              Text(
+                                  "Atleta",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                            ],
                           ),
-                        ),
-                        //SizedBox(width: 5),
-                        Text(
-                          "Atleta",
-                          style: TextStyle(fontSize: 16),
                         ),
                       ],
                     ),

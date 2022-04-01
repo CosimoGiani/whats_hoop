@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:whatshoop/models/fine.dart';
 import 'package:whatshoop/database_service.dart';
 
@@ -13,8 +14,6 @@ class Fines extends StatefulWidget {
   _FinesState createState() => _FinesState();
 
 }
-
-// TODO decidere se mettere nella app bar il nome della pagina
 
 class _FinesState extends State<Fines> {
 
@@ -68,19 +67,32 @@ class _FinesState extends State<Fines> {
                       children: [
                         SizedBox(height: 20),
                         // MULTA ATLETA
-                        Container(
-                          color: Colors.orange.shade500,
-                          alignment: Alignment.center,
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                child: Text("MULTA ATLETA", style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
-                              ),
-                            ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.deepOrangeAccent.withOpacity(0.8),
+                                  spreadRadius: 0.5,
+                                  blurRadius: 3,
+                                  offset: Offset(1, 1),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center,
+                            height: 50,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                  child: Text("MULTA ATLETA", style: TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         // MOTIVO
@@ -89,7 +101,14 @@ class _FinesState extends State<Fines> {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: Colors.deepOrangeAccent,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xfff38120).withOpacity(0.8),
+                                  spreadRadius: 0.5,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 1),
+                                ),
+                              ],
                             ),
                             height: 35,
                             child: Row(
@@ -134,11 +153,6 @@ class _FinesState extends State<Fines> {
                                         width: 50,
                                         child: Stack(
                                           children: [
-                                            Positioned(
-                                              left: 13.5,
-                                              top: 13,
-                                              child: Icon(Icons.edit, color: Colors.black.withAlpha(150), size: 25),
-                                            ),
                                             IconButton(
                                               onPressed: () async {
                                                 final reason = await showReasonDialog();
@@ -164,7 +178,14 @@ class _FinesState extends State<Fines> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: Colors.deepOrangeAccent,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0xfff38120).withOpacity(0.8),
+                                      spreadRadius: 0.5,
+                                      blurRadius: 2,
+                                      offset: Offset(0, 1),
+                                    ),
+                                  ],
                                 ),
                                 height: 35,
                                 width: 150,
@@ -185,7 +206,6 @@ class _FinesState extends State<Fines> {
                               child: Container(
                                 height: 40,
                                 width: double.infinity,
-                                //color: Colors.lightBlue,
                                 child: Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: Material(
@@ -256,7 +276,14 @@ class _FinesState extends State<Fines> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      color: Colors.deepOrangeAccent,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0xfff38120).withOpacity(0.8),
+                                          spreadRadius: 0.5,
+                                          blurRadius: 2,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
                                     ),
                                     height: 35,
                                     width: 150,
@@ -299,11 +326,6 @@ class _FinesState extends State<Fines> {
                                           flex: 2,
                                           child: Stack(
                                             children: [
-                                              Positioned(
-                                                left: 13.7,
-                                                top: 11.8,
-                                                child: Icon(Icons.event, color: Colors.black.withAlpha(150), size: 25),
-                                              ),
                                               IconButton(
                                                 onPressed: () {
                                                   showDatePicker(
@@ -370,19 +392,32 @@ class _FinesState extends State<Fines> {
                         ),
                         SizedBox(height: 25),
                         // RIASSUNTO MULTE
-                        Container(
-                          alignment: Alignment.center,
-                          height: 50,
-                          color: Colors.orange.shade500,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                child: Text("RIASSUNTO MULTE", style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
-                              ),
-                            ],
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.deepOrangeAccent.withOpacity(0.8),
+                                  spreadRadius: 0.5,
+                                  blurRadius: 3,
+                                  offset: Offset(1, 1),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                  child: Text("RIASSUNTO MULTE", style: TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(height: 15),
@@ -401,13 +436,25 @@ class _FinesState extends State<Fines> {
                         Container(
                           alignment: Alignment.centerLeft,
                           height: 50,
-                          color: Colors.yellow,
+                          //color: Colors.yellow,
                           child: Padding(
                             padding: EdgeInsets.only(left: 20),
                             child: Row(
                               children: [
                                 Text("Debito totale giocatore: ", style: TextStyle(fontSize: 20)),
-                                Text(sumFines(finesToDisplay) + " €", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                Material(
+                                  elevation: 3,
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(sumFines(finesToDisplay) + " €", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -458,15 +505,6 @@ class _FinesState extends State<Fines> {
           children: [
             SizedBox(height: 15),
             Text(
-              "Salda multe",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
-            SizedBox(height: 15),
-            Text(
               "Sicuro di voler saldare il debito totale del giocatore?",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -477,46 +515,48 @@ class _FinesState extends State<Fines> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Material(
-                  elevation: 7,
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.deepOrangeAccent,
-                  child: MaterialButton(
-                    minWidth: MediaQuery.of(context).size.width * 0.2,
-                    onPressed: () async {
+                Padding(
+                  padding: EdgeInsets.only(right: 40),
+                  child: GestureDetector(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        color: Colors.green,
+                      ),
+                      width: MediaQuery.of(context).size.width/6,
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Center(
+                          child: Icon(Icons.done_outline, color: Colors.white, size: 30),
+                        ),
+                      ),
+                    ),
+                    onTap: () async {
                       await service.clearPlayerFines(playerID);
                       setState(() {
                         finesToDisplay.clear();
                       });
                       Navigator.of(context).pop();
                     },
-                    child: Text(
-                      "Sì",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white
-                      ),
-                    ),
                   ),
                 ),
-                SizedBox(width: 40),
-                Material(
-                  elevation: 7,
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.deepOrangeAccent,
-                  child: MaterialButton(
-                    minWidth: MediaQuery.of(context).size.width * 0.2,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "No",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white
+                GestureDetector(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(25)),
+                      color: Colors.red,
+                    ),
+                    width: MediaQuery.of(context).size.width/6,
+                    child: Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Center(
+                        child: Icon(Icons.highlight_remove, color: Colors.white, size: 30),
                       ),
                     ),
                   ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
               ],
             ),
@@ -628,15 +668,6 @@ class _FinesState extends State<Fines> {
           children: [
             SizedBox(height: 15),
             Text(
-              "Salda multa",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
-            SizedBox(height: 15),
-            Text(
               "Sicuro di voler saldare la multa del " + fineToRemove.date + " pari a " + fineToRemove.euro.toString() + "," + adjusteCents(fineToRemove.cents) + "€?",
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -647,46 +678,48 @@ class _FinesState extends State<Fines> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Material(
-                  elevation: 7,
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.deepOrangeAccent,
-                  child: MaterialButton(
-                    minWidth: MediaQuery.of(context).size.width * 0.2,
-                    onPressed: () async {
+                Padding(
+                  padding: EdgeInsets.only(right: 40),
+                  child: GestureDetector(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(25)),
+                        color: Colors.green,
+                      ),
+                      width: MediaQuery.of(context).size.width/6,
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Center(
+                          child: Icon(Icons.done_outline, color: Colors.white, size: 30),
+                        ),
+                      ),
+                    ),
+                    onTap: () async {
                       await service.removeFine(fineToRemove.id);
                       setState(() {
                         finesToDisplay.remove(fineToRemove);
                       });
                       Navigator.of(context).pop();
                     },
-                    child: Text(
-                      "Sì",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white
-                      ),
-                    ),
                   ),
                 ),
-                SizedBox(width: 40),
-                Material(
-                  elevation: 7,
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.deepOrangeAccent,
-                  child: MaterialButton(
-                    minWidth: MediaQuery.of(context).size.width * 0.2,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "No",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white
+                GestureDetector(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(25)),
+                      color: Colors.red,
+                    ),
+                    width: MediaQuery.of(context).size.width/6,
+                    child: Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Center(
+                        child: Icon(Icons.highlight_remove, color: Colors.white, size: 30),
                       ),
                     ),
                   ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
               ],
             ),

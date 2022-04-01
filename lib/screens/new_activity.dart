@@ -68,23 +68,33 @@ class _NewActivityState extends State<NewActivity> {
                       children: [
                         Expanded(
                           flex: 5,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.deepOrangeAccent,
-                            ),
-                            height: 35,
-                            width: 120,
-                            child: Row(
-                              children: [
-                                Icon(Icons.sports_basketball, color: Colors.white),
-                                SizedBox(width: 5),
-                                Text(
-                                    "TIPO",
-                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                                ),
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          child: Material(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0xfff38120).withOpacity(0.7),
+                                      spreadRadius: 0.5,
+                                      blurRadius: 3,
+                                      offset: Offset(0, 1),
+                                    ),
+                                  ],
+                              ),
+                              height: 35,
+                              width: 120,
+                              child: Row(
+                                children: [
+                                  Icon(Icons.sports_basketball, color: Colors.white),
+                                  SizedBox(width: 5),
+                                  Text(
+                                      "TIPO",
+                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                  ),
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              ),
                             ),
                           ),
                         ),
@@ -92,7 +102,7 @@ class _NewActivityState extends State<NewActivity> {
                         Expanded(
                           flex: 8,
                           child: Material(
-                            elevation: 20,
+                            elevation: 10,
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
                               width: 240,
@@ -118,23 +128,33 @@ class _NewActivityState extends State<NewActivity> {
                       children: [
                         Expanded(
                           flex: 5,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.deepOrangeAccent,
-                            ),
-                            height: 35,
-                            width: 120,
-                            child: Row(
-                              children: [
-                                Icon(Icons.event_note_sharp, color: Colors.white),
-                                SizedBox(width: 5),
-                                Text(
-                                    "DATA",
-                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                                ),
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          child: Material(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xfff38120).withOpacity(0.7),
+                                    spreadRadius: 0.5,
+                                    blurRadius: 3,
+                                    offset: Offset(0, 1),
+                                  ),
+                                ],
+                              ),
+                              height: 35,
+                              width: 120,
+                              child: Row(
+                                children: [
+                                  Icon(Icons.event_note_sharp, color: Colors.white),
+                                  SizedBox(width: 5),
+                                  Text(
+                                      "DATA",
+                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                  ),
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              ),
                             ),
                           ),
                         ),
@@ -142,7 +162,7 @@ class _NewActivityState extends State<NewActivity> {
                         Expanded(
                           flex: 8,
                           child: Material(
-                            elevation: 20,
+                            elevation: 10,
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
                               //width: 240,
@@ -196,23 +216,33 @@ class _NewActivityState extends State<NewActivity> {
                       children: [
                         Expanded(
                           flex: 5,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.deepOrangeAccent,
-                            ),
-                            height: 35,
-                            width: 120,
-                            child: Row(
-                              children: [
-                                Icon(Icons.access_time_filled, color: Colors.white),
-                                SizedBox(width: 5),
-                                Text(
-                                    "ORARIO",
-                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                                ),
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          child: Material(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xfff38120).withOpacity(0.7),
+                                    spreadRadius: 0.5,
+                                    blurRadius: 3,
+                                    offset: Offset(0, 1),
+                                  ),
+                                ],
+                              ),
+                              height: 35,
+                              width: 120,
+                              child: Row(
+                                children: [
+                                  Icon(Icons.access_time_filled, color: Colors.white),
+                                  SizedBox(width: 5),
+                                  Text(
+                                      "ORARIO",
+                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                                  ),
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
+                              ),
                             ),
                           ),
                         ),
@@ -220,7 +250,7 @@ class _NewActivityState extends State<NewActivity> {
                         Expanded(
                           flex: 8,
                           child: Material(
-                            elevation: 20,
+                            elevation: 10,
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
                               //width: 240,
@@ -258,27 +288,6 @@ class _NewActivityState extends State<NewActivity> {
                                       icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
                                     ),
                                   ),
-                                  /*Padding(
-                                        padding: EdgeInsets.fromLTRB(122, 0, 0, 0),
-                                        child: IconButton(
-                                          onPressed: () {
-                                            showTimePicker(
-                                              context: context,
-                                              initialTime: initialTime,
-                                            ).then((time) {
-                                              if (time!.hour < DateTime.now().hour) {
-                                                setState(() {
-                                                  hourSelectedNow = true;
-                                                });
-                                              }
-                                              setState(() {
-                                                timeToDisplay = adjusteTime(time);
-                                              });
-                                            });
-                                          },
-                                          icon: Icon(Icons.more_time, color: Colors.deepOrangeAccent, size: 25),
-                                        ),
-                                      ),*/
                                 ],
                               ),
                             ),
@@ -288,27 +297,37 @@ class _NewActivityState extends State<NewActivity> {
                     ),
                     SizedBox(height: 25),
                     // LUOGO
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.deepOrangeAccent,
-                      ),
-                      height: 35,
-                      child: Row(
-                        children: [
-                          Icon(Icons.map_outlined, color: Colors.white),
-                          SizedBox(width: 5),
-                          Text(
-                              "LUOGO",
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                          ),
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    Material(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xfff38120).withOpacity(0.7),
+                              spreadRadius: 0.5,
+                              blurRadius: 3,
+                              offset: Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        height: 35,
+                        child: Row(
+                          children: [
+                            Icon(Icons.map_outlined, color: Colors.white),
+                            SizedBox(width: 5),
+                            Text(
+                                "LUOGO",
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
                       ),
                     ),
                     SizedBox(height: 7),
                     Material(
-                      elevation: 20,
+                      elevation: 10,
                       borderRadius: BorderRadius.circular(10),
                       child: Flex(
                         direction: Axis.horizontal,
@@ -347,27 +366,37 @@ class _NewActivityState extends State<NewActivity> {
                     ),
                     SizedBox(height: 25),
                     // NOTE
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.deepOrangeAccent,
-                      ),
-                      height: 35,
-                      child: Row(
-                        children: [
-                          Icon(Icons.speaker_notes, color: Colors.white),
-                          SizedBox(width: 5),
-                          Text(
-                              "NOTE",
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
-                          ),
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    Material(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xfff38120).withOpacity(0.7),
+                              spreadRadius: 0.5,
+                              blurRadius: 3,
+                              offset: Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        height: 35,
+                        child: Row(
+                          children: [
+                            Icon(Icons.speaker_notes, color: Colors.white),
+                            SizedBox(width: 5),
+                            Text(
+                                "NOTE",
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)
+                            ),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
                       ),
                     ),
                     SizedBox(height: 7),
                     Material(
-                        elevation: 20,
+                        elevation: 10,
                         borderRadius: BorderRadius.circular(10),
                         child: Flex(
                             direction: Axis.horizontal,
@@ -405,6 +434,7 @@ class _NewActivityState extends State<NewActivity> {
                     // BOTTONE AGGIUNGI
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
+                        primary: Colors.deepOrangeAccent,
                         onSurface: Colors.deepOrangeAccent,
                         elevation: 10,
                         padding: EdgeInsets.fromLTRB(50, 17, 50, 17),
@@ -622,7 +652,6 @@ class _NewActivityState extends State<NewActivity> {
                             elevation: 20,
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
-                              //width: 240,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -834,17 +863,17 @@ class _NewActivityState extends State<NewActivity> {
         content: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(Icons.error_outline_outlined, size: 32, color: Colors.white),
+            Icon(Icons.error_outline_outlined, size: 25, color: Colors.white),
             SizedBox(width: 16),
             Expanded(
               child: Text(
                 message,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
             ),
           ],
         ),
-      backgroundColor: Colors.deepOrangeAccent,
+      backgroundColor: Color(0xfff38120),
       duration: Duration(seconds: 4),
       behavior: SnackBarBehavior.fixed,
     );
@@ -885,15 +914,6 @@ class _NewActivityState extends State<NewActivity> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 15),
-              Text(
-                "Luogo",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                ),
-              ),
               SizedBox(height: 15),
               Text(
                 "Inserisci il luogo dove si terrà l'evento",
@@ -957,15 +977,6 @@ class _NewActivityState extends State<NewActivity> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 15),
-              Text(
-                "Note aggiuntive",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
               SizedBox(height: 15),
               Text(
                 "Qualcosa da aggiungere? Scrivi qui",

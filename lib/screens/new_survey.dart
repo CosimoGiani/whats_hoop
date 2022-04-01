@@ -46,7 +46,14 @@ class _NewSurveyState extends State<NewSurvey> {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.deepOrangeAccent,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xfff38120).withOpacity(0.7),
+                              spreadRadius: 0.5,
+                              blurRadius: 3,
+                              offset: Offset(0, 1),
+                            ),
+                          ],
                         ),
                         height: 35,
                         child: Row(
@@ -63,7 +70,7 @@ class _NewSurveyState extends State<NewSurvey> {
                       ),
                       SizedBox(height: 7),
                       Material(
-                        elevation: 20,
+                        elevation: 10,
                         borderRadius: BorderRadius.circular(10),
                         child: Flex(
                           direction: Axis.horizontal,
@@ -89,11 +96,6 @@ class _NewSurveyState extends State<NewSurvey> {
                                     //padding: EdgeInsets.only(top: 10),
                                     child: Stack(
                                       children: [
-                                        Positioned(
-                                          left: 13.5,
-                                          top: 13,
-                                          child: Icon(Icons.edit, color: Colors.black.withAlpha(150), size: 25),
-                                        ),
                                         IconButton(
                                           onPressed: () async {
                                             final title = await showTitleDialog();
@@ -117,7 +119,14 @@ class _NewSurveyState extends State<NewSurvey> {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.deepOrangeAccent,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xfff38120).withOpacity(0.7),
+                              spreadRadius: 0.5,
+                              blurRadius: 3,
+                              offset: Offset(0, 1),
+                            ),
+                          ],
                         ),
                         height: 35,
                         child: Row(
@@ -159,11 +168,6 @@ class _NewSurveyState extends State<NewSurvey> {
                                     width: 50,
                                     child: Stack(
                                       children: [
-                                        Positioned(
-                                          left: 13.5,
-                                          top: 13,
-                                          child: Icon(Icons.edit, color: Colors.black.withAlpha(150), size: 25),
-                                        ),
                                         IconButton(
                                           onPressed: () async {
                                             final question = await showQuestionDialog();
@@ -187,7 +191,14 @@ class _NewSurveyState extends State<NewSurvey> {
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.deepOrangeAccent,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xfff38120).withOpacity(0.7),
+                              spreadRadius: 0.5,
+                              blurRadius: 3,
+                              offset: Offset(0, 1),
+                            ),
+                          ],
                         ),
                         height: 35,
                         child: Row(
@@ -308,15 +319,6 @@ class _NewSurveyState extends State<NewSurvey> {
             children: [
               SizedBox(height: 15),
               Text(
-                "Opzione",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-              SizedBox(height: 15),
-              Text(
                 "Inserisci una opzione del sondaggio",
                 style: TextStyle(
                     fontSize: 18
@@ -331,7 +333,7 @@ class _NewSurveyState extends State<NewSurvey> {
                   },
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
-                    hintText: "Scrivi l'opzione qua",
+                    hintText: "Scrivi qua...",
                   ),
                 ),
               ),
@@ -383,15 +385,6 @@ class _NewSurveyState extends State<NewSurvey> {
             children: [
               SizedBox(height: 15),
               Text(
-                "Titolo",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-              SizedBox(height: 15),
-              Text(
                 "Inserisci un titolo per il sondaggio",
                 style: TextStyle(
                     fontSize: 18
@@ -406,7 +399,7 @@ class _NewSurveyState extends State<NewSurvey> {
                   },
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
-                    hintText: "Titolo sondaggio",
+                    hintText: "Titolo...",
                   ),
                 ),
               ),
@@ -452,15 +445,6 @@ class _NewSurveyState extends State<NewSurvey> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 15),
-              Text(
-                "Domanda",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
-                ),
-              ),
               SizedBox(height: 15),
               Text(
                 "Inserisci il testo della domanda che vuoi fare",

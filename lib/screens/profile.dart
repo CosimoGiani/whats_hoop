@@ -187,6 +187,9 @@ class _ProfileState extends State<Profile> {
                 padding: EdgeInsets.fromLTRB(50, 30, 50, 0),
                 child: RaisedButton(
                   color: Colors.deepOrangeAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Text("Torna alle tue squadre", style: TextStyle(color: Colors.white, fontSize: 22)),
                   onPressed: () {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => TrainerHome()));
@@ -412,8 +415,8 @@ class _ProfileState extends State<Profile> {
                       flex: 3,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.orange,
-                          elevation: 7
+                          primary: Colors.deepOrangeAccent,
+                          elevation: 5,
                         ),
                         child: Text("DETTAGLI", style: TextStyle(fontSize: 17)),
                         onPressed: () {
