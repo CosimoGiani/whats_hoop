@@ -24,8 +24,8 @@ Se invece ci si autentica come un utente **atleta**, una volta aver accettato l'
 Per maggiori informazioni e una descrizione completa dell'applicazione si rimanda alla lettura del [report](https://github.com/CosimoGiani/whats_hoop/blob/master/Relazione_HCI_GianiCosimo.pdf).
 
 ## Tecnologie utilizzate
-L'applicazione è stata implementata utilizzando `Flutter`, un framework open-source per la creazione di applicazioni multi-platform. Si tiene a precisare che, nonostante sia in grado di performare tranquillamente sia su Android che iOS, Whats Hoop è stata unicamente testata su dispositivi Android per limiti tecnologici del su creatore. Resta comunque intangibile il fatto che l'applicazione per la sua natura ibrida possa essere utilizzata anche su dispositivi iOS con semplici accorgimenti. \
-Per quanto riguarda il database è stato fatto uso di `Firebase` - nello specifico è stato utilizzato `Firestore`: Firebase è un servizio di hosting che consente di usufruire di uno spazio di memorizzazione online nel quale salvare i dati richiesti dall'applicazione, gestendo al contempo il meccanismo di autenticazione.
+L'applicazione è stata implementata utilizzando [`Flutter`](https://flutter.dev/), un framework open-source per la creazione di applicazioni multi-platform. Si tiene a precisare che, nonostante sia in grado di performare tranquillamente sia su Android che iOS, Whats Hoop è stata unicamente testata su dispositivi Android per limiti tecnologici del su creatore. Resta comunque intangibile il fatto che l'applicazione per la sua natura ibrida possa essere utilizzata anche su dispositivi iOS con semplici accorgimenti. \
+Per quanto riguarda il database è stato fatto uso di [`Firebase`](https://firebase.google.com/) - nello specifico è stato utilizzato `Firestore`: Firebase è un servizio di hosting che consente di usufruire di uno spazio di memorizzazione online nel quale salvare i dati richiesti dall'applicazione, gestendo al contempo il meccanismo di autenticazione.
 
 ## Applicazione
 Di seguito sono riportate le schermate di login e di registrazione a Whats Hoop:
